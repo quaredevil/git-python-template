@@ -72,7 +72,7 @@ Then we need to enter the project directory and execute some commands::
 
 Install dependences::
     
-    poetry install
+    poetry install -E doc -vvv
 
 If there is a problem installing the dependencies::
     
@@ -108,21 +108,97 @@ Use
 
 Unit Testing
 ------------
-``pytest`` is a unit testing platform and the package of choice when it comes to the majority of the Python ecosystem::
-    
+``pytest`` is a unit testing platform and the package of choice when it comes to the majority of the Python ecosystem.
+
+While tests are great, it’s just as important to measure your testing as it is to write them. The best way to do that is to use the Python coverage package.
+To make sure that coverage is set up ``correctly`` see an example setup.cfg file.
+
+.. code-block::
+   
     pytest
 
 Package Testing
 ---------------
-``tox`` is a powerful Python testing automation package. It automates the setup and execution of the testing steps above. You can use it to test across multiple Python versions.::
-    
+``tox`` is a powerful Python testing automation package. It automates the setup and execution of the testing steps above. You can use it to test across multiple Python versions.
+Note that running pytest, as done above, only runs on the version of python that the virtualenv used (a proxy for testing your code across all versions). In order to debug issues in other python versions, you would use tox.
+
+.. code-block::
+
     tox
 
 Project Styling
 ---------------
-``flake8`` is a fantastic package and tool that will make sure that your code is in tip-top shape.::
+``flake8`` is a fantastic package and tool that will make sure that your code is in tip-top shape.
+Lastly, flake8 can be configured via setup.cfg (they are adding pyproject.toml support).
+
+.. code-block::
 
     flake8
+
+
+``black`` is a fantastic package and tool that will make sure that your code is in tip-top shape.
+You can configure some of the project settings in the pyproject.toml.
+
+.. code-block::
+
+    black --check app
+
+
+``isort`` helps make sure that your imports are in the correct order as per the PEP8 guidelines and automatically sorts them to match that style if they aren’t.
+In order to automatically recognize external packages, another tool called seed-isort-config jumps in to automatically seed the configuration step in the pyproject.toml file.
+
+.. code-block::
+
+    isort --recursive --check-only simplecalc
+
+
+Commit
+------
+``pre-commit`` As the name implies, pre-commit is a Python package that allows you to create a .pre-commit-config.yaml file that maintains a list of tools to run before each commit.
+
+.. code-block::
+
+    pre-commit install
+    pre-commit run --all-files
+
+.. code-block::
+
+    pre-commit run --all-files
+    # seed isort known_third_party.............................................Passed
+    # isort....................................................................Passed
+    # black....................................................................Passed
+    # Flake8...................................................................Passed
+
+
+``towncrier`` lets you add those changes incrementally as you merge in pull requests. Come release time, this tool compiles and deletes newsfragments as the package likes to call them into a single changelog.
+The tool is configured with all of these settings in the pyproject.toml.
+
+.. code-block::
+
+    poetry run towncrier --draft
+    poetry run towncrier
+
+
+Documentation
+---------------
+``sphinx`` is the leading python documentation tool. It is a tool that, when mastered, can make some stunning documentation. Yet, it isn’t super difficult to get up and running. It uses ReStructured (rst) files to construct beautiful documentation websites.
+
+.. code-block::
+
+    cd doc
+    make html
+    open _build/html/index.html # Opens in browsers
+
+
+Release
+---------------
+poetry is not only great for managing package dependencies but also for submitting a package to pypi.
+
+.. code-block::
+
+    poetry publish
+
+    
 
 Activity Diagram
 =================
