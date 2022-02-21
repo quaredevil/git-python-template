@@ -1,0 +1,110 @@
+[tool.poetry]
+name = "simplecalc"
+version = "0.0.1"
+description = "A simple calculator to demonstrate python tooling"
+authors = ["Emanuel <manolos.sjc@gmail.com>"]
+license = "MIT"
+readme = "README.rst"
+homepage = "https://simplecalc.readthedocs.io"
+repository = "https://github.com/adithyabsk/simplecalc"
+documentation = "https://simplecalc.readthedocs.io"
+include = [
+    "README.rst",
+    "pyproject.toml",
+    "LICENSE"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+grpcio = "^1.43.0"
+grpcio-tools = "^1.43.0"
+protobuf = "^3.19.4"
+six = "^1.16.0"
+click = "^8.0.3"
+toml = "^0.10.2"
+
+Sphinx = {version = "^4.4.0", optional = true}
+sphinx-rtd-theme = {version = "^1.0.0", optional = true}
+m2r2 = "^0.3.2"
+
+
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.4.3"
+flake8 = "^4.0.1"
+xdoctest = "^0.15.10"
+flake8-docstrings = "^1.6.0"
+pydocstyle = "^6.1.1"
+black = {version = "^22.1.0", allow-prereleases = true}
+isort = {version = "^5.10.1", extras = ["pyproject"]}
+seed-isort-config = "^2.2.0"
+pytest-cov = "^3.0.0"
+pytest-mock = "^3.7.0"
+coverage = "^6.3.1"
+tox = "^3.24.5"
+towncrier = "^21.9.0"
+pre-commit = "^2.17.0"
+Sphinx = "^4.4.0"
+sphinx-rtd-theme = "^1.0.0"
+toml = "^0.10.2"
+darglint = "^1.8.1"
+docutils = "<=0.18" # temporary hot patch 
+
+[tool.poetry.extras]
+doc = ["Sphinx", "sphinx-rtd-theme", "m2r2"]
+
+[tool.poetry.scripts]
+simplecalc = "simplecalc.cli:simplecalc"
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+known_first_party = 'simplecalc'
+known_third_party = ["click", "pytest"]
+multi_line_output = 3
+lines_after_imports = 2
+force_grid_wrap = 0
+combine_as_imports = true
+include_trailing_comma = true
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = true
+envlist = py38
+
+[testenv]
+whitelist_externals = poetry
+commands =
+    poetry install -vvv
+    poetry run pytest
+"""
+
+[tool.towncrier]
+# Usage: (Source: https://github.com/python-trio/trio/blob/master/pyproject.toml)
+# - PRs should drop a file like "issuenumber.feature" in newsfragments
+#   (or "bugfix", "doc", "removal", "misc")
+# - At release time after bumping version number, run:
+#   poetry run towncrier --draft, then poetry towncrier
+package = "simplecalc"
+filename = "./doc/changelog.rst"
+directory = "newsfragments"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

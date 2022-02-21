@@ -1,0 +1,14 @@
+{
+    "search.exclude": {
+        "**/.git": true,
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/tmp": true,
+        "**/.mypy_cache": true,
+        "**/mypy_cache": true,
+        "**/venv": true,
+        "**/.venv": true,
+        "**/htmlcov": true,
+        "**/doc/_build": true
+    },
+}
