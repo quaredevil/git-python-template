@@ -1,5 +1,4 @@
 """The most over-engineered calculator."""
-
 from functools import reduce
 
 
@@ -158,5 +157,5 @@ def power(nums):
 
     """
     return reduce(
-        lambda n1, n2: n1 ** n2, _check_input(nums, check_pow_case=True)
+        lambda n1, n2: n1**n2, _check_input(nums, check_pow_case=True)
     )

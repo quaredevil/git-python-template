@@ -49,7 +49,7 @@ Sphinx = "^4.4.0"
 sphinx-rtd-theme = "^1.0.0"
 toml = "^0.10.2"
 darglint = "^1.8.1"
-docutils = "<=0.18" # temporary hot patch 
+docutils = "<=0.18" # temporary hot patch
 
 [tool.poetry.extras]
 doc = ["Sphinx", "sphinx-rtd-theme", "m2r2"]

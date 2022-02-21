@@ -1,5 +1,4 @@
 """Simple calculator API."""
-
 from simplecalc.calculator import (
     CalculatorTypeError,
     CalculatorValueError,
@@ -27,7 +26,7 @@ def get_pyproject():
     init_path = os.path.abspath(os.path.dirname(__file__))
     pyproject_path = os.path.join(init_path, "../pyproject.toml")
 
-    with open(pyproject_path, "r") as fopen:
+    with open(pyproject_path) as fopen:
         pyproject = toml.load(fopen)
 
     return pyproject["tool"]["poetry"]

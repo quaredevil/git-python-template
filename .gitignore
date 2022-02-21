@@ -112,3 +112,6 @@ pip-wheel-metadata/
 
 # Sphinx
 doc/_build/
+
+# VSCode
+.vscode

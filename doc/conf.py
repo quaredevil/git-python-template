@@ -3,9 +3,7 @@
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
-
 # -- Path setup --------------------------------------------------------------
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -24,7 +22,7 @@ def get_version():
 
     toml_path = os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
 
-    with open(toml_path, "r") as fopen:
+    with open(toml_path) as fopen:
         pyproject = toml.load(fopen)
 
     return pyproject["tool"]["poetry"]["version"]

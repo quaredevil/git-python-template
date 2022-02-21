@@ -1,4 +1,4 @@
-steps: 
+steps:
   - script: poetry run pytest --junitxml=junit/test-results.xml --cov-report=xml
     displayName: Run pytest
   - task: PublishTestResults@2

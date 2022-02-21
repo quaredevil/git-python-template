@@ -1,5 +1,4 @@
 """A command line interface for a calculator app."""
-
 import click
 
 from simplecalc.calculator import (

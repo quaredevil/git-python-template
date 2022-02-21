@@ -1,5 +1,4 @@
 """Test the command line interace to the simplecalc API."""
-
 import pytest
 from click.testing import CliRunner
 

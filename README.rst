@@ -40,7 +40,7 @@
    * - |99applogo|
      - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et eros imperdiet, ullamcorper sapien id, convallis diam. Aliquam pellentesque sem a sem lacinia, eu aliquam ex dignissim. Quisque id justo eu eros dictum tristique at vitae elit. Curabitur quis leo neque. In auctor, urna viverra posuere iaculis, metus nunc aliquet erat, eu dictum neque ligula sed sapien. Vivamus ac bibendum magna.
        `Learn more. <https://#readme>`_
-       
+
 
 Project Setup
 =============
@@ -63,23 +63,23 @@ Allow the process to complete and verify the Python version was installed sucess
 Poetry_
 ----------------
 Get/install Poetry::
-       
+
     curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-    
+
 Then we need to enter the project directory and execute some commands::
-    
+
     poetry shell
 
 Install dependences::
-    
+
     poetry install -E doc -vvv
 
 If there is a problem installing the dependencies::
-    
+
     poetry cache clear . --all
     rm poetry.lock
     poetry install
-    
+
 .. Links
 .. _Python: https://www.python.org/downloads/
 .. _Poetry: https://github.com/sdispater/poetry
@@ -114,7 +114,7 @@ While tests are great, it’s just as important to measure your testing as it is
 To make sure that coverage is set up ``correctly`` see an example setup.cfg file.
 
 .. code-block::
-   
+
     pytest
 
 Package Testing
@@ -164,10 +164,25 @@ Commit
 .. code-block::
 
     pre-commit run --all-files
+    # pyupgrade................................................................Passed
+    # trim trailing whitespace.................................................Passed
+    # fix end of files.........................................................Passed
+    # check for merge conflicts................................................Passed
+    # check for case conflicts.................................................Passed
+    # check json...........................................(no files to check)Skipped
+    # check toml...............................................................Passed
+    # check yaml...............................................................Passed
+    # pretty format json...................................(no files to check)Skipped
+    # check python ast.........................................................Passed
+    # debug statements (python)................................................Passed
+    # check docstring is first.................................................Passed
+    # detect private key.......................................................Passed
+    # check for added large files..............................................Passed
+    # check builtin type constructor use.......................................Passed
     # seed isort known_third_party.............................................Passed
     # isort....................................................................Passed
     # black....................................................................Passed
-    # Flake8...................................................................Passed
+    # flake8...................................................................Passed
 
 
 ``towncrier`` lets you add those changes incrementally as you merge in pull requests. Come release time, this tool compiles and deletes newsfragments as the package likes to call them into a single changelog.
@@ -198,7 +213,7 @@ poetry is not only great for managing package dependencies but also for submitti
 
     poetry publish
 
-    
+
 
 Activity Diagram
 =================
@@ -236,16 +251,16 @@ Default parts are::
     / ("root")
     ├── .github                         - github (e.g. ci, images) stuff.
     ├── doc                             - documentation related stuff.
-    ├── newsfragments                   - changelogs related stuff.    
+    ├── newsfragments                   - changelogs related stuff.
     ├── app                             - application stuff.
     ├── .gitignore                      - parameters/directories to be ignored by git sync.
     ├── pre-commit-config.yaml          - parameters to check after commit.
     ├── LICENSE                         - use license file.
-    ├── Makefile                        - 
-    ├── pyproject.toml                  - 
+    ├── Makefile                        -
+    ├── pyproject.toml                  -
     ├── README.md                       - development and design information.
-    ├── readthedocs.yml                 - 
-    ├── Makefile                        - 
+    ├── readthedocs.yml                 -
+    ├── Makefile                        -
     └── setup.cfg                       -
 
 
@@ -295,14 +310,14 @@ Project Styling
 * pre-commit_
 
 
-Unit Testing 
+Unit Testing
 ----------------
 
 * pytest_ for unit testing
-    * pytest-cov_ 
+    * pytest-cov_
     * pytest-mock_
-    * xdoctest_   
-* coverage_     
+    * xdoctest_
+* coverage_
 * tox_ for testing on multiple Python versions
 
 
@@ -368,12 +383,3 @@ Authors
 * `Emanuel Barbosa Soares`_
 
 .. _`Emanuel Barbosa Soares`: https://github.com/quaredevil/
-
-
-
-
-    
-
-
-
-

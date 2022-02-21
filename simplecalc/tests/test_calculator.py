@@ -1,5 +1,4 @@
 """Unit tests for the core calculator."""
-
 import pytest
 
 
