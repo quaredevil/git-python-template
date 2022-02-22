@@ -62,7 +62,6 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install pre-commit
           poetry install        
 
 
