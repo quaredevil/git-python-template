@@ -49,7 +49,7 @@ Project Setup
 =============
 
 
-Python_
+Python
 --------------
 Start the installation of Python with the command::
 
@@ -63,7 +63,7 @@ Allow the process to complete and verify the Python version was installed sucess
     python --version
 
 
-Poetry_
+Poetry
 ----------------
 Get/install Poetry::
 
@@ -82,11 +82,6 @@ If there is a problem installing the dependencies::
     poetry cache clear . --all
     rm poetry.lock
     poetry install
-
-.. Links
-.. _Python: https://www.python.org/downloads/
-.. _Poetry: https://github.com/sdispater/poetry
-
 
 
 
@@ -209,7 +204,7 @@ Documentation
     open _build/html/index.html # Opens in browsers
 
 
-Git
+Code Versioning
 =============
 
 |gitflow|
@@ -219,12 +214,12 @@ Git
 |gitflowcommands|
 
 
-.. |gitflow| image:: .github\images\gitflow-commands.jpg
-   :width: 200
+.. |gitflow| image:: .github\images\gitflow-diagram.jpg
+   :width: 600
    :alt: Git-Flow
 
 .. |gitflowcommands| image:: .github\images\gitflow-commands.png
-   :width: 200
+   :width: 600
    :alt: Git-Flow-Commands
 
 
@@ -232,7 +227,7 @@ Activity Diagram
 =================
 
 .. |ActivityDiagramImage| image:: .github\images\activity-diagram.jpg
-   :width: 200
+   :width: 600
    :alt: Activity Diagram
 
 |ActivityDiagramImage|
@@ -241,16 +236,18 @@ Activity Diagram
 Deploy Diagram
 ==============
 
-.. |DeployDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
+.. |DeployDiagramImage| image:: .github\images\deploy-diagram.png
+   :width: 600
    :alt: Deploy Diagram
 
 |DeployDiagramImage|
+
 
 CI/CD Diagram
 ==============
 
 .. |CICDDiagramImage| image:: .github\images\cicd.png
-   :width: 200
+   :width: 600
    :alt: CI/CD Diagram
 
 |CICDDiagramImage|

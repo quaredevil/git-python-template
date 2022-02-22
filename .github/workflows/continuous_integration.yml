@@ -14,46 +14,96 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the code, library action
-    - uses: actions/checkout@v2
+    #----------------------------------------------
+    #       check-out repo and set-up python
+    #----------------------------------------------
+    - name: Check out repository
+      uses: actions/checkout@v2
 
     # Set-up python
     - name: Set up Python 3.x
+      id: setup-python
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
 
+    #----------------------------------------------
+    #  -----  install & configure poetry  -----
+    #----------------------------------------------
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        installer-parallel: true
+        virtualenvs-path: ~/.cache/pypoetry
+
+    #Install poetry
+    #- name: Install poetry no matter what
+    #  run: |
+    #    curl -sSL https://install.python-poetry.org | python3 -
+    #    echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    #----------------------------------------------
+    #       load cached venv if cache exists
+    #----------------------------------------------
     - name: Load cached venv
       id: cached-poetry-dependencies
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v2
       with:
         path: |
           ~/.cache/pypoetry
-          .venv
-        key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-    
-    #Install poetry
-    - name: Install poetry no matter what
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+          ~/.cache
+          ~/.local
+          .venv    
+        #key: poetry      
+        key: ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: |
+            ${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-
+            ${{ runner.os }}-
 
-    #Install requirements
-    - name: Install requirements
+  
+    #----------------------------------------------
+    # install dependencies if cache does not exist
+    #----------------------------------------------
+    - name: Install dependencies
       if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: |
         poetry install
 
+
+    #----------------------------------------------
     # Run Linting
+    #----------------------------------------------
     - name: Run pre-commit hooks (Linting)
       run: |
         python -m pip install --upgrade pip
         pip install pre-commit
-        pre-commit install
+        pre-commit install -f --install-hooks
         pre-commit run --all-files
 
-    # Run python tests
+
+    #----------------------------------------------
+    # Run python tests with coverage
+    #----------------------------------------------
     - name: Test with pytest
       run: |
         poetry install
-        poetry run pytest
+        poetry run pytest --cache-clear --cov=simplecalc > pytest-coverage.txt
+      
+      #poetryrun pytest --junitxml=junit/test-results.xml --cov-report=xml
+        
+    
+    
+
+  coveralls_finish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    #----------------------------------------------
+    #Run coverage tests
+    #----------------------------------------------
+    - name: pytest-coverage-commentator
+      uses: coroo/pytest-coverage-commentator@v1.0.2
+      with:
+        pytest-coverage: pytest-coverage.txt
