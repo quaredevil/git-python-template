@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     #----------------------------------------------
+    #       check-out repo
+    #----------------------------------------------
+    - name: Check out repository
+      uses: actions/checkout@v2
+    #----------------------------------------------
     #Run coverage tests
     #----------------------------------------------
     - name: pytest-coverage-commentator
