@@ -1,4 +1,4 @@
-name: continuous-integration-pull-request
+name: ci-pull-request
 
 on:
   pull_request:
@@ -41,6 +41,7 @@ jobs:
       #----------------------------------------------
       - name: Load cached venv
         id: cached-poetry-dependencies
+        if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
         with:
           path: |
