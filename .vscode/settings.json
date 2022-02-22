@@ -1,14 +1,14 @@
 {
-  "search.exclude": {
-    "**/.git": true,
-    "**/node_modules": true,
-    "**/bower_components": true,
-    "**/tmp": true,
-    "**/.mypy_cache": true,
-    "**/mypy_cache": true,
-    "**/venv": true,
-    "**/.venv": true,
-    "**/htmlcov": true,
-    "**/doc/_build": true
-  }
+.vscode/launch.json"search.exclude": {
+.vscode/launch.json.vscode/launch.json"**/.git": true,
+.vscode/launch.json.vscode/launch.json"**/node_modules": true,
+.vscode/launch.json.vscode/launch.json"**/bower_components": true,
+.vscode/launch.json.vscode/launch.json"**/tmp": true,
+.vscode/launch.json.vscode/launch.json"**/.mypy_cache": true,
+.vscode/launch.json.vscode/launch.json"**/mypy_cache": true,
+.vscode/launch.json.vscode/launch.json"**/venv": true,
+.vscode/launch.json.vscode/launch.json"**/.venv": true,
+.vscode/launch.json.vscode/launch.json"**/htmlcov": true,
+.vscode/launch.json.vscode/launch.json"**/doc/_build": true
+.vscode/launch.json}
 }

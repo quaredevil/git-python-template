@@ -7,7 +7,7 @@
 
 .. Shields (https://shields.io/)
 
-|license| |versions| |test-status| |docs| |metacov|
+|license| |versions| |test-status| |docs| |metacov| |pre-commit|
 
 .. |license| image:: https://img.shields.io/github/license/99Taxis/systems-engineering-git-python-template.svg
     :target: https://github.com/99Taxis/systems-engineering-git-python-template/blob/master/LICENSE
@@ -29,6 +29,9 @@
     :target: https://nedbat.github.io/coverage-reports/latest.html
     :alt: Coverage reports
 
+.. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+   :target: https://github.com/pre-commit/pre-commit
+   :alt: pre-commit
 
 .. |99applogo| image:: https://avatars.githubusercontent.com/u/4680924?s=400&v=4
    :alt: 99app
@@ -169,16 +172,17 @@ Commit
     # fix end of files.........................................................Passed
     # check for merge conflicts................................................Passed
     # check for case conflicts.................................................Passed
-    # check json...........................................(no files to check)Skipped
+    # check json...............................................................Passed
     # check toml...............................................................Passed
     # check yaml...............................................................Passed
-    # pretty format json...................................(no files to check)Skipped
+    # pretty format json.......................................................Passed
     # check python ast.........................................................Passed
     # debug statements (python)................................................Passed
     # check docstring is first.................................................Passed
     # detect private key.......................................................Passed
     # check for added large files..............................................Passed
     # check builtin type constructor use.......................................Passed
+    # check vcs permalinks.....................................................Passed
     # seed isort known_third_party.............................................Passed
     # isort....................................................................Passed
     # black....................................................................Passed

@@ -1,0 +1,16 @@
+-   id: pyupgrade
+    name: pyupgrade
+    description: Automatically upgrade syntax for newer versions.
+    entry: pyupgrade
+    language: python
+    types: [python]
+    # for backward compatibility
+    files: ''
+    minimum_pre_commit_version: 0.15.0
+
+-   id: validate_manifest
+    name: validate pre-commit manifest
+    description: This validator validates a pre-commit hooks manifest file
+    entry: pre-commit-validate-manifest
+    language: python
+    files: ^(\.pre-commit-hooks\.yaml|hooks\.yaml)$
