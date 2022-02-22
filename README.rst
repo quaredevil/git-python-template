@@ -209,14 +209,47 @@ Documentation
     open _build/html/index.html # Opens in browsers
 
 
-Release
----------------
-poetry is not only great for managing package dependencies but also for submitting a package to pypi.
+Git
+=============
+
+|gitflow|
+
+poetry is not only great for managing package dependencies but also for submitting a package to ``pypi``.
+
+|gitflowcommands|
 
 .. code-block::
 
-    poetry publish
+    git flow init
 
+
+.. code-block::
+
+    git flow feature start [name]
+    git flow feature pull [name]
+    git flow feature publish [name]
+    git flow feature finish [name]
+
+.. code-block::
+
+    git flow release start v1.0.0
+    git flow release publish v1.0.0
+    git flow release finish v1.0.0
+
+.. code-block::
+
+    git flow hotfix start v1.0.0
+    git flow hotfix publish v1.0.0
+    git flow hotfix finish v1.0.0
+
+
+
+
+.. |gitflow| image:: .github\images\gitflow-hotfix-branch-diagram.jpg
+   :alt: Git-Flow
+
+.. |gitflowcommands| image:: .github\images\git-flow-commands.png
+   :alt: Git-Flow-Commands
 
 
 Activity Diagram
