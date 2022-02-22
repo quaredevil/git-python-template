@@ -214,48 +214,25 @@ Git
 
 |gitflow|
 
-poetry is not only great for managing package dependencies but also for submitting a package to ``pypi``.
+``Gitflow`` is a legacy Git workflow that was originally a disruptive and novel strategy for managing Git branches.
 
 |gitflowcommands|
 
-.. code-block::
 
-    git flow init
-
-
-.. code-block::
-
-    git flow feature start [name]
-    git flow feature pull [name]
-    git flow feature publish [name]
-    git flow feature finish [name]
-
-.. code-block::
-
-    git flow release start v1.0.0
-    git flow release publish v1.0.0
-    git flow release finish v1.0.0
-
-.. code-block::
-
-    git flow hotfix start v1.0.0
-    git flow hotfix publish v1.0.0
-    git flow hotfix finish v1.0.0
-
-
-
-
-.. |gitflow| image:: .github\images\gitflow-hotfix-branch-diagram.jpg
+.. |gitflow| image:: .github\images\gitflow-commands.jpg
+   :width: 200
    :alt: Git-Flow
 
-.. |gitflowcommands| image:: .github\images\git-flow-commands.png
+.. |gitflowcommands| image:: .github\images\gitflow-commands.png
+   :width: 200
    :alt: Git-Flow-Commands
 
 
 Activity Diagram
 =================
 
-.. |ActivityDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
+.. |ActivityDiagramImage| image:: .github\images\activity-diagram.jpg
+   :width: 200
    :alt: Activity Diagram
 
 |ActivityDiagramImage|
@@ -265,15 +242,16 @@ Deploy Diagram
 ==============
 
 .. |DeployDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
-   :alt: Activity Diagram
+   :alt: Deploy Diagram
 
 |DeployDiagramImage|
 
 CI/CD Diagram
 ==============
 
-.. |CICDDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
-   :alt: Activity Diagram
+.. |CICDDiagramImage| image:: .github\images\cicd.png
+   :width: 200
+   :alt: CI/CD Diagram
 
 |CICDDiagramImage|
 
@@ -376,7 +354,7 @@ Release
 ----------------
 
 * towncrier_ for changelogs
-* `poetry publish`_
+* `Git-Flow`_
 
 
 Documentation
@@ -405,7 +383,7 @@ Documentation
 .. _readthedocs: https://github.com/readthedocs/readthedocs.org
 .. _sphinx_rtd_theme: https://github.com/readthedocs/sphinx_rtd_theme
 .. _towncrier: https://github.com/hawkowl/towncrier
-.. _`poetry publish`: https://poetry.eustace.io/docs/cli/#publish
+.. _`Git-Flow`: https://medium.com/@diegowribeiro/trabalhando-com-git-e-git-flow-no-dia-a-dia-b%C3%A1sico-96a3ae02f8e3
 .. _documentation: https://#
 
 Issues
