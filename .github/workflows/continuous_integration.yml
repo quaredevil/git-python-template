@@ -96,7 +96,7 @@ jobs:
     
     
 
-  coveralls_finish:
+  coverage:
     needs: build
     runs-on: ubuntu-latest
     steps:
