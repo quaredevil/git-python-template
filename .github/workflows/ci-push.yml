@@ -1,15 +1,12 @@
-name: continuous_integration
+name: continuous-integration-push
 
 on:
-  pull_request:
-    branches:
-    - main
-    - develop
-
+  
   push:
     branches:
     - main
     - develop
+    - release
 
 jobs:
 
@@ -95,18 +92,4 @@ jobs:
         poetry run pytest --cache-clear --cov=simplecalc > pytest-coverage.txt
       
       #poetryrun pytest --junitxml=junit/test-results.xml --cov-report=xml
-        
     
-    
-
-  coverage:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    #----------------------------------------------
-    #Run coverage tests
-    #----------------------------------------------
-    - name: pytest-coverage-commentator
-      uses: coroo/pytest-coverage-commentator@v1.0.2
-      with:
-        pytest-coverage: pytest-coverage.txt
