@@ -13,10 +13,37 @@ on:
     - 'releases/**'
 
 jobs: 
+
+  environments:
+    name: Environments 🐍
+    runs-on: ubuntu-latest
+    steps:
+      
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------      
+      
+      - name: Type branch != (pull_request)
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+
+      - name: Type branch == (pull request)
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
+      
+      - name: General Environments
+
+      - name: Print Environments
+        run: |
+          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+          echo TEST=${{ env.TEST }}
+
   build:    
     name: Build Python 🐍
+    needs: environments
     runs-on: ubuntu-latest
-    environment: develop
     steps:
       
       #----------------------------------------------
@@ -25,16 +52,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       
-      - name: Get branch name != (pull_request)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
 
-      - name: Get branch name == (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
-      
       - name: Print Environments
         run: |
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
