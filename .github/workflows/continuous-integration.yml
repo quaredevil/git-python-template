@@ -27,6 +27,9 @@ jobs:
           echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo "==============================="
+          
+      - name: Print Environments
+        run: echo BRANCH_NAME=${{ env.BRANCH_NAME }}
   
   build:    
     name: Build Python 🐍
@@ -43,6 +46,7 @@ jobs:
       - name: Get Environments
         run: |
           echo "==============================="
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo "==============================="
          
