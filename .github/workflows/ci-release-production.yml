@@ -13,11 +13,11 @@ on:
 
 jobs: 
 
-  build-release-main:
+  build-to-release:
     name: Build Python 🐍
     
     environment:
-      name: development
+      name: release
       #url: 'https://rancher-finance-stage.99app.com/'
       
     env:
