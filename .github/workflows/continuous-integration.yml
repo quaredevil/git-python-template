@@ -1,28 +1,26 @@
-name: continuous-integration
+name: ci-develop
 
 on:
   pull_request:
     branches:
-    - main
-    - 'releases/**'
+    - develop
 
   push:
     branches:
-    - main
     - develop
-    - 'releases/**'
 
 jobs: 
 
-  environments:
-    name: Environments 🐍
+  build:    
+  
+    name: Build Python 🐍
     runs-on: ubuntu-latest
     steps:
-      
+
       #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------      
-      
+      #Ger Environments
+      #----------------------------------------------
+
       - name: Type branch != (pull_request)
         if: github.event_name != 'pull_request'
         shell: bash
@@ -38,14 +36,6 @@ jobs:
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo TEST=${{ env.TEST }}
 
-  build:    
-    name: Build Python 🐍
-    needs: environments
-    environment:
-       name: develop
-    runs-on: ubuntu-latest
-    steps:
-      
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
@@ -57,6 +47,7 @@ jobs:
         run: |
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo TEST=${{ env.TEST }}
+          echo TESTs=${{ secrets.TEST }}
         
       # Set-up python
       - name: Set up Python 3.x
