@@ -22,7 +22,6 @@ jobs:
     environment:
       name: ${{ env.TYPE_ENVIRONMENT }}
       url: ${{ env.DEPLOY_URL }}
-      TEST_URL
     runs-on: ubuntu-latest
     steps:
 
