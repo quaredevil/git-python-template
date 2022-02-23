@@ -35,7 +35,10 @@ jobs:
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
       
       - name: Print Environments
-        run: echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+        environment: develop
+        run: |
+          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+          echo TEST=${{ env.TEST }}
         
       # Set-up python
       - name: Set up Python 3.x
