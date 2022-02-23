@@ -17,15 +17,11 @@ jobs:
     environment:
       name: development
       
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     outputs:
       is_TEST_URL_set: ${{ steps.checksecret_job.outputs.is_TEST_URL_set }}
+
     steps:
       - name: Check whether unity activation requests should be done
         id: checksecret_job
@@ -37,9 +33,10 @@ jobs:
 
 
   build-dev:
-    needs: environment
     name: Build Python 🐍
     
+    needs: environment
+
     environment:
       name: development
       #url: 'https://rancher-finance-stage.99app.com/'
@@ -67,7 +64,8 @@ jobs:
         env: 
           TEST2_URL: ${{ needs.environment.outputs.is_TEST_URL_set }}
         run: |
-          echo TEST_URL=${{ secrets.TEST_URL }}
+          echo TEST_URL= ${{ secrets.TEST_URL }}
+          echo TEST2_URL= $TEST2_URL
 
 
       # Set-up python
