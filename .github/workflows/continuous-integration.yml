@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
-    
+
     outputs:
       is_TEST_URL_set: ${{ steps.checksecret_job.outputs.is_TEST_URL_set }}
     steps:
@@ -34,13 +34,13 @@ jobs:
 
 
   build-dev:
-    
+    needs: environment
     name: Build Python 🐍
     
     environment:
       name: development
       url: 'https://rancher-finance-stage.99app.com/'
-      TEST2_URL: ${{ needs.checksecret.outputs.is_TEST_URL_set }}
+      
     
     strategy:
       fail-fast: false
@@ -61,6 +61,8 @@ jobs:
 
 
       - name: Check Environments
+        env: 
+          TEST2_URL: ${{ needs.environment.outputs.is_TEST_URL_set }}
         run: |
           echo TEST_URL=${{ secrets.TEST_URL }}
 
