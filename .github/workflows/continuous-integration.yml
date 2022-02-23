@@ -13,48 +13,39 @@ on:
     - 'releases/**'
 
 jobs:
-
-  build:
+  environments:
+    name: Environments 🐍
     runs-on: ubuntu-latest
-    env:
-          JOB_VARIABLE: XXXXXXXXXXXX
     steps:
+      
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------      
+      - name: Get Environments
+        run: |
+          echo "==============================="
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+          echo "==============================="
+  
+  build:    
+    name: Build Python 🐍
+    needs: environments
+    runs-on: ubuntu-latest
+    steps:
+      
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
       - name: Check out repository
         uses: actions/checkout@v2
       
-      
-      - name: Get branch name != (pull_request)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-
-      - name: Get branch name == (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-
       - name: Get Environments
         run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+          echo "==============================="
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo "==============================="
-          echo "Slug variables"
-          echo " - ${{ env.GITHUB_REF_SLUG }}"    
-          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
-          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
-          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
-          
-          echo "Slug URL variables"
-          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
-          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
-          
-          echo "Short SHA variables"
-          echo " - ${{ env.GITHUB_SHA_SHORT }}"
+         
       
       - name: Print Environments
         run: echo BRANCH_NAME=${{ env.BRANCH_NAME }}
