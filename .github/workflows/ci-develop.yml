@@ -14,37 +14,6 @@ jobs:
   build-to-dev:
     name: Build Python 🐍
     
-    needs: environment
-
-    environment:
-      name: development
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.8]
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-
-    outputs:
-      is_TEST_URL_set: ${{ steps.checksecret_job.outputs.is_TEST_URL_set }}
-
-    steps:
-      - name: Check whether unity activation requests should be done
-        id: checksecret_job
-        env:
-            TEST_URL: ${{ secrets.TEST_URL }}
-        run: |
-            echo "is_TEST_URL_set: ${{ env.TEST_URL != '' }}"
-            echo "::set-output name=is_TEST_URL_set::${{ env.TEST_URL != '' }}"
-
-
-  build-dev:
-    name: Build Python 🐍
-    
-    needs: environment
-
     environment:
       name: development
       #url: 'https://rancher-finance-stage.99app.com/'
