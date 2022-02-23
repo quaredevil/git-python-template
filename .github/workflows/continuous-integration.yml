@@ -32,8 +32,6 @@ jobs:
         if: github.event_name == 'pull_request'
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
-      
-      - name: General Environments
 
       - name: Print Environments
         run: |
