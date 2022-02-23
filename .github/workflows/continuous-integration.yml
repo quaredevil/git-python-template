@@ -24,12 +24,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
     
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.TEST }}
-        run: |
-          example-command "$SUPER_SECRET"
-
       - name: Get secret from inject environment
         env:
           TEST: ${{ secrets.TEST }}
