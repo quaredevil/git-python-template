@@ -10,7 +10,6 @@ on:
     - develop
 
 env:
-  TYPE_ENVIRONMENT: development
   DEPLOY_URL: https://rancher-finance-stage.99app.com/
 
 
@@ -20,8 +19,8 @@ jobs:
   
     name: Build Python 🐍
     environment:
-      name: "echo $TYPE_ENVIRONMENT"
-      url: "echo $DEPLOY_URL"
+      name: development
+      url: ${{ steps.step_id.outputs.url_output }}
     runs-on: ubuntu-latest
     steps:
 
