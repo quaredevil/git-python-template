@@ -25,10 +25,10 @@ jobs:
         uses: actions/checkout@v2
     
       - shell: bash
-      env:
-        SUPER_SECRET: ${{ secrets.TEST }}
-      run: |
-        example-command "$TEST"
+        env:
+          SUPER_SECRET: ${{ secrets.TEST }}
+        run: |
+          example-command "$TEST"
 
       - name: Get secret from inject environment
         env:
