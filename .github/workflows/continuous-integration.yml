@@ -4,13 +4,13 @@ on:
   pull_request:
     branches:
     - main
-    - release
+    - 'releases/**'
 
   push:
     branches:
     - main
     - develop
-    - release
+    - 'releases/**'
 
 jobs:
 
@@ -36,16 +36,29 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
 
-      - name: Debug
-        run: echo ${{ env.BRANCH_NAME }}
-        
-      - name: Get secret from inject environment
-        env:
-          TEST: ${{ env.TEST }}
+      - name: Get Environments
         run: |
-          echo Environment: $TEST
-          echo JOB_VARIABLE: $JOB_VARIABLE
-
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
+          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+          echo "==============================="
+          echo "Slug variables"
+          echo " - ${{ env.GITHUB_REF_SLUG }}"    
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG }}"
+          
+          echo "Slug URL variables"
+          echo " - ${{ env.GITHUB_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_HEAD_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_BASE_REF_SLUG_URL }}"
+          echo " - ${{ env.GITHUB_REPOSITORY_SLUG_URL }}"
+          
+          echo "Short SHA variables"
+          echo " - ${{ env.GITHUB_SHA_SHORT }}"
+      
+      - name: Print Environments
+        run: echo BRANCH_NAME=${{ env.BRANCH_NAME }}
+        
       # Set-up python
       - name: Set up Python 3.x
         id: setup-python
