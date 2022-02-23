@@ -14,6 +14,9 @@ jobs:
   environment:
     name: check if TEST_URL is set in github secrets
     
+    environment:
+      name: development
+      
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +42,7 @@ jobs:
     
     environment:
       name: development
-      url: 'https://rancher-finance-stage.99app.com/'
+      #url: 'https://rancher-finance-stage.99app.com/'
       
     
     strategy:
