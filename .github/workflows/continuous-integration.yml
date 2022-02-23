@@ -16,6 +16,7 @@ jobs:
   build:    
     name: Build Python 🐍
     runs-on: ubuntu-latest
+    environment: develop
     steps:
       
       #----------------------------------------------
@@ -35,7 +36,6 @@ jobs:
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
       
       - name: Print Environments
-        environment: develop
         run: |
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo TEST=${{ env.TEST }}
