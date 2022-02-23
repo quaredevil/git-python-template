@@ -11,9 +11,12 @@ on:
 
 jobs: 
 
-  build:    
+  build-dev:    
   
     name: Build Python 🐍
+    environment:
+      name: develop
+      url: 'https://rancher-finance-stage.99app.com'
     runs-on: ubuntu-latest
     steps:
 
