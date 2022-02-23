@@ -16,7 +16,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
+    env:
+          JOB_VARIABLE: BBBBBBBBBBBB
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -29,6 +30,7 @@ jobs:
           TEST: AAAAA
         run: |
           echo Environment: $TEST
+          echo JOB_VARIABLE: $JOB_VARIABLE
 
       # Set-up python
       - name: Set up Python 3.x
