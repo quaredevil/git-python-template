@@ -20,8 +20,8 @@ jobs:
   
     name: Build Python 🐍
     environment:
-      name: $TYPE_ENVIRONMENT
-      url: $DEPLOY_URL
+      name: "echo $TYPE_ENVIRONMENT"
+      url: "echo $DEPLOY_URL"
     runs-on: ubuntu-latest
     steps:
 
