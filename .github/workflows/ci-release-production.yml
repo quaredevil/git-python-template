@@ -125,7 +125,7 @@ jobs:
         uses: alexanderdamiani/pytester-cov@v1.2.3
         with:
           pytest-root-dir: 'simplecalc/.'
-          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }} 
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
       - name: Coverage single fail - new issue
