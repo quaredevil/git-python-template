@@ -9,19 +9,47 @@ on:
     branches:
     - develop
 
-env:
-  DEPLOY_URL: https://rancher-finance-stage.99app.com/
-
-
 jobs: 
 
+  environment:
+    name: check if TEST_URL is set in github secrets
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+    
+    outputs:
+      is_TEST_URL_set: ${{ steps.checksecret_job.outputs.is_TEST_URL_set }}
+    steps:
+      - name: Check whether unity activation requests should be done
+        id: checksecret_job
+        env:
+            TEST_URL: ${{ secrets.TEST_URL }}
+        run: |
+            echo "is_TEST_URL_set: ${{ env.TEST_URL != '' }}"
+            echo "::set-output name=is_TEST_URL_set::${{ env.TEST_URL != '' }}"
+
+
   build-dev:
-  
+    
     name: Build Python 🐍
+    
     environment:
       name: development
-      url: ${{ steps.step_id.outputs.url_output }}
-    runs-on: ubuntu-latest
+      url: 'https://rancher-finance-stage.99app.com/'
+      TEST2_URL: ${{ needs.checksecret.outputs.is_TEST_URL_set }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
     steps:
 
       #----------------------------------------------
@@ -30,21 +58,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       
-      - name: Print Environments
+
+
+      - name: Check Environments
         run: |
-          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
-          echo TEST=${{ env.TEST }}
-          echo TESTs=${{ secrets.TEST }}
-          echo TYPE_ENVIRONMENT=${{ secrets.TYPE_ENVIRONMENT }}
-          echo DEPLOY_URL=${{ secrets.DEPLOY_URL }}
           echo TEST_URL=${{ secrets.TEST_URL }}
 
+
       # Set-up python
-      - name: Set up Python 3.x
+      - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python-version }}
 
       #----------------------------------------------
       #  -----  install & configure poetry  -----
