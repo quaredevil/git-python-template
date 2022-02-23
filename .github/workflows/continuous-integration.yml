@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-          JOB_VARIABLE: BBBBBBBBBBBB
+          JOB_VARIABLE: XXXXXXXXXXXX
     steps:
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -27,7 +27,7 @@ jobs:
     
       - name: Get secret from inject environment
         env:
-          TEST: AAAAA
+          TEST: ${{ env.TEST }}
         run: |
           echo Environment: $TEST
           echo JOB_VARIABLE: $JOB_VARIABLE
