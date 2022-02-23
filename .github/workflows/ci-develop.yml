@@ -1,47 +1,46 @@
-name: continuous-integration
+name: ci-develop
 
 on:
   pull_request:
     branches:
-    - main
-    - release
+    - develop
 
   push:
     branches:
-    - main
     - develop
-    - release
 
-jobs:
+jobs: 
 
-  build:
-    runs-on: ubuntu-latest
+  build-to-dev:
+    name: Build Python 🐍
+    
+    needs: environment
+
+    environment:
+      name: development
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
 
     steps:
+
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
       - name: Check out repository
         uses: actions/checkout@v2
-    
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.TEST }}
-        run: |
-          example-command "$SUPER_SECRET"
-
-      - name: Get secret from inject environment
-        env:
-          TEST: ${{ secrets.TEST }}
-        run: |
-          echo Environment: $TEST
 
       # Set-up python
-      - name: Set up Python 3.x
+      - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ matrix.python-version }}
 
       #----------------------------------------------
       #  -----  install & configure poetry  -----
@@ -99,13 +98,14 @@ jobs:
       #----------------------------------------------
       - name: Test with pytest
         run: |
-          poetry run pytest --cache-clear --cov=simplecalc > pytest-coverage.txt
+          poetry run pytest --cache-clear --cov-report term-missing > pytest-coverage.txt
 
 
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
       - name: pytest-coverage-commentator
+        if: github.event_name == 'pull_request'
         uses: coroo/pytest-coverage-commentator@v1.0.2
         with:
-          pytest-coverage: pytest-coverage.txt  
+          pytest-coverage: pytest-coverage.txt

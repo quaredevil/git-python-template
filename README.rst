@@ -7,7 +7,12 @@
 
 .. Shields (https://shields.io/)
 
-|license| |versions| |test-status| |docs| |metacov| |pre-commit|
+|python| |license| |versions| |test-status| |docs| |metacov| |pre-commit|
+
+
+.. |python| image:: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
+    :target: https://www.python.org
+    :alt: Python
 
 .. |license| image:: https://img.shields.io/github/license/99Taxis/systems-engineering-git-python-template.svg
     :target: https://github.com/99Taxis/systems-engineering-git-python-template/blob/master/LICENSE
