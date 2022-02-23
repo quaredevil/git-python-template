@@ -12,28 +12,9 @@ on:
     - develop
     - 'releases/**'
 
-jobs:
-  environments:
-    name: Environments 🐍
-    runs-on: ubuntu-latest
-    steps:
-      
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------      
-      - name: Get Environments
-        run: |
-          echo "==============================="
-          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
-          echo "==============================="
-          
-      - name: Print Environments
-        run: echo BRANCH_NAME=${{ env.BRANCH_NAME }}
-  
+jobs: 
   build:    
     name: Build Python 🐍
-    needs: environments
     runs-on: ubuntu-latest
     steps:
       
