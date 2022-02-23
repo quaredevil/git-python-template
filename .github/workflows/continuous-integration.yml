@@ -9,35 +9,22 @@ on:
     branches:
     - develop
 
+env:
+  TYPE_ENVIRONMENT: development
+  DEPLOY_URL: https://rancher-finance-stage.99app.com/
+
+
 jobs: 
 
-  build-dev:    
+  build-dev:
   
     name: Build Python 🐍
     environment:
-      name: develop
-      url: 'https://rancher-finance-stage.99app.com'
+      name: ${{ env.TYPE_ENVIRONMENT }}
+      url: ${{ env.DEPLOY_URL }}
+      TEST_URL
     runs-on: ubuntu-latest
     steps:
-
-      #----------------------------------------------
-      #Ger Environments
-      #----------------------------------------------
-
-      - name: Type branch != (pull_request)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-
-      - name: Type branch == (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV       
-
-      - name: Print Environments
-        run: |
-          echo BRANCH_NAME=${{ env.BRANCH_NAME }}
-          echo TEST=${{ env.TEST }}
 
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -45,13 +32,15 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
       
-
       - name: Print Environments
         run: |
           echo BRANCH_NAME=${{ env.BRANCH_NAME }}
           echo TEST=${{ env.TEST }}
           echo TESTs=${{ secrets.TEST }}
-        
+          echo TYPE_ENVIRONMENT=${{ secrets.TYPE_ENVIRONMENT }}
+          echo DEPLOY_URL=${{ secrets.DEPLOY_URL }}
+          echo TEST_URL=${{ secrets.TEST_URL }}
+
       # Set-up python
       - name: Set up Python 3.x
         id: setup-python
