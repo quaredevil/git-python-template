@@ -28,7 +28,7 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.TEST }}
         run: |
-          example-command "$TEST"
+          example-command "$SUPER_SECRET"
 
       - name: Get secret from inject environment
         env:
