@@ -19,7 +19,7 @@ jobs:
     environment:
       name: release
       url: 'https://rancher-finance-stage.99app.com/'
-      
+    
     strategy:
       fail-fast: false
       matrix:
@@ -94,7 +94,7 @@ jobs:
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
-      - name: Linting | Run pre-commit hooks (Linting)
+      - name: Linting | Run pre-commit hooks
         if: github.event_name == 'push'
         run: |
           python -m pip install --upgrade pip
@@ -110,12 +110,14 @@ jobs:
         id: pytester-cov
         uses: alexanderdamiani/pytester-cov@v1.2.3
         env:
+          COVERAGE_SINGLE: 60
+          COVERAGE_TOTAL: 60
           PYTEST_ADDOPTS: -v -x --cov=simplecalc --cov-config=setup.cfg --cov-report=term
         with:
           pytest-root-dir: '.'
           cov-omit-list: 'doc/*, simplecalc/tests/*'
-          cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
-          cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }} 
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
 
       #----------------------------------------------
       #Coverage | Check single file
