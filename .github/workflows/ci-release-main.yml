@@ -20,13 +20,16 @@ jobs:
       name: release
       url: 'https://rancher-finance-stage.99app.com/'
     
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.8]
-        os: [ubuntu-latest]
+    #Matrix off
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    python-version: [3.8]
+    #    os: [ubuntu-latest]
 
-    runs-on: ${{ matrix.os }}
+    #runs-on: ${{ matrix.os }}
+    
+    runs-on: ubuntu-latest
 
     steps:
 
@@ -41,7 +44,8 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.python-version }}
+          #python-version: ${{ matrix.python-version }}
+          python-version: 3.8
 
       #----------------------------------------------
       #  -----  install & configure poetry  -----
