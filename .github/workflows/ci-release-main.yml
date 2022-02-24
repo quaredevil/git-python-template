@@ -20,6 +20,10 @@ jobs:
       name: release
       url: 'https://rancher-finance-stage.99app.com/'
     
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
+
     #Matrix off
     #strategy:
     #  fail-fast: false
@@ -28,6 +32,7 @@ jobs:
     #    os: [ubuntu-latest]
 
     #runs-on: ${{ matrix.os }}
+    
     
     runs-on: ubuntu-latest
 
@@ -118,8 +123,10 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: 'doc/*, simplecalc/tests/*'
-          cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
-          cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+          #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
+          #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
       #----------------------------------------------
       #Coverage | Check single file
