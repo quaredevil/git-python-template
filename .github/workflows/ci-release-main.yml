@@ -20,10 +20,6 @@ jobs:
       name: release
       url: 'https://rancher-finance-stage.99app.com/'
       
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
-
     strategy:
       fail-fast: false
       matrix:
@@ -37,11 +33,11 @@ jobs:
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
-      - name: Check out repository
+      - name: Repository | Check out
         uses: actions/checkout@v2
 
       # Set-up python
-      - name: Set up Python
+      - name: Build | Set up Python
         id: setup-python
         uses: actions/setup-python@v2
         with:
@@ -50,7 +46,7 @@ jobs:
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
-      - name: Install Poetry
+      - name: Build | Install Poetry
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
@@ -61,7 +57,7 @@ jobs:
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: Load cached venv
+      - name: Build | Load cached venv
         id: cached-poetry-dependencies
         if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
@@ -81,19 +77,24 @@ jobs:
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
-      - name: Install dependencies
+      - name: Build | Install dependencies
         #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           poetry install 
-      #poetry export -f requirements.txt --output requirements.txt --without-hashes
-      #if [ ! -f requirements.txt ]; then poetry export -f requirements.txt --output requirements.txt --without-hashes; fi  
-      #pip install pytest-cov
+
+      #----------------------------------------------
+      # Export requirements from poetry
+      #----------------------------------------------
+      - name: Build | Export requirements from poetry
+        #if: github.event_name == 'pull_request'
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
 
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
-      - name: Run pre-commit hooks (Linting)
+      - name: Linting | Run pre-commit hooks (Linting)
         if: github.event_name == 'push'
         run: |
           python -m pip install --upgrade pip
@@ -101,15 +102,6 @@ jobs:
           pre-commit install -f --install-hooks
           pre-commit run --all-files
 
-
-      #----------------------------------------------
-      # Export requirements from poetry
-      #----------------------------------------------
-      - name: Export requirements from poetry
-        #if: github.event_name == 'pull_request'
-        run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
-      
 
       #----------------------------------------------
       #Run coverage tests
@@ -146,7 +138,7 @@ jobs:
       #----------------------------------------------
       #Coverage | commit table generated
       #----------------------------------------------
-      - name: Commit pytest coverage table
+      - name: Coverage | Commit pytest coverage table
         uses: peter-evans/commit-comment@v1
         with:
           body: ${{ steps.pytester-cov.outputs.output-table }}
