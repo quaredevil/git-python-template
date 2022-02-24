@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v2
 
       # Set-up python
-      - name: Build | Set up Python
+      - name: ⚙️ Build  | Set up Python
         id: setup-python
         uses: actions/setup-python@v2
         with:
@@ -55,7 +55,7 @@ jobs:
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
-      - name: Build | Install Poetry
+      - name: ⚙️ Build  | Install Poetry
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
@@ -66,7 +66,7 @@ jobs:
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: Build | Load cached venv
+      - name: ⚙️ Build  | Load cached venv
         id: cached-poetry-dependencies
         if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
@@ -86,7 +86,7 @@ jobs:
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
-      - name: Build | Install dependencies
+      - name: ⚙️ Build  | Install dependencies
         #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
@@ -95,7 +95,7 @@ jobs:
       #----------------------------------------------
       # Export requirements from poetry
       #----------------------------------------------
-      - name: Build | Export requirements from poetry
+      - name: ⚙️ Build  | Export requirements from poetry
         #if: github.event_name == 'pull_request'
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
@@ -103,7 +103,7 @@ jobs:
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
-      - name: Linting | Run pre-commit hooks
+      - name: 🔧 Linting | Run pre-commit hooks
         if: github.event_name == 'push'
         run: |
           python -m pip install --upgrade pip
@@ -115,7 +115,7 @@ jobs:
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
-      - name: Coverage | test pytester-cov
+      - name: 🔍 Coverage | test pytester-cov
         id: pytester-cov
         uses: alexanderdamiani/pytester-cov@v1.2.3
         env:
@@ -131,7 +131,7 @@ jobs:
       #----------------------------------------------
       #Coverage | Check single file
       #----------------------------------------------
-      - name: Coverage | single fail - exit
+      - name: 🔍 Coverage | single fail - exit
         if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
         run: |
           echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
@@ -140,7 +140,7 @@ jobs:
       #----------------------------------------------
       #Coverage | Check total file
       #----------------------------------------------
-      - name: Coverage | total fail - exit
+      - name: 🔍 Coverage | total fail - exit
         if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
         run: |
           echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
@@ -149,7 +149,7 @@ jobs:
       #----------------------------------------------
       #Coverage | commit table generated
       #----------------------------------------------
-      - name: Coverage | Commit pytest coverage table
+      - name: 🔍 Coverage | Commit pytest coverage table
         uses: peter-evans/commit-comment@v1
         with:
           body: ${{ steps.pytester-cov.outputs.output-table }}
