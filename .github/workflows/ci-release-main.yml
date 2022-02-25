@@ -17,22 +17,7 @@ jobs:
     name: Build Python 🐍
     
     environment:
-      name: release
-      url: 'https://rancher-finance-stage.99app.com/'
-    
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
-
-    #Matrix off
-    #strategy:
-    #  fail-fast: false
-    #  matrix:
-    #    python-version: [3.8]
-    #    os: [ubuntu-latest]
-
-    #runs-on: ${{ matrix.os }}
-    
+      name: release    
     
     runs-on: ubuntu-latest
 
@@ -41,7 +26,7 @@ jobs:
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
-      - name: Repository | Check out
+      - name: ⬇️ 💾 Repository | Check out
         uses: actions/checkout@v2
 
       # Set-up python
@@ -111,7 +96,22 @@ jobs:
           pre-commit install -f --install-hooks
           pre-commit run --all-files
 
+  coverage:
+    name: 🔍 Coverage
+    
+    needs: build-to-release
 
+    environment:
+      name: release
+      #url: 'https://rancher-finance-stage.99app.com/'
+    
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
+
+    runs-on: ubuntu-latest
+
+    steps:
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
