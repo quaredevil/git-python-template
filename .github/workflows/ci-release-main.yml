@@ -77,13 +77,7 @@ jobs:
           python -m pip install --upgrade pip
           poetry install 
 
-      #----------------------------------------------
-      # Export requirements from poetry
-      #----------------------------------------------
-      - name: ⚙️ Build  | Export requirements from poetry
-        #if: github.event_name == 'pull_request'
-        run: |
-          poetry export -f requirements.txt --output requirements.txt --without-hashes
+      
 
       #----------------------------------------------
       # Run Linting
@@ -95,6 +89,24 @@ jobs:
           pip install pre-commit
           pre-commit install -f --install-hooks
           pre-commit run --all-files
+
+      #----------------------------------------------
+      # Export requirements from poetry
+      #----------------------------------------------
+      - name: ⚙️ Build  | Export requirements from poetry
+        #if: github.event_name == 'pull_request'
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+
+      #----------------------------------------------
+      # Artifact | Upload requirements.txt
+      #----------------------------------------------
+      - name: 🗎 Artifact | Upload requirements.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: requirements.txt
+          path: requirements.txt
 
   coverage:
     name: 🔍 Coverage
@@ -137,6 +149,14 @@ jobs:
               ${{ runner.os }}-build-
               ${{ runner.os }}-
 
+      #----------------------------------------------
+      # Artifact | Download requirements.txt
+      #----------------------------------------------
+      - name: 🗎 Artifact | Download requirements.txt
+        uses: actions/download-artifact@v2
+        with:
+          name: requirements.yml
+          path: .
 
       #----------------------------------------------
       #Run coverage tests
