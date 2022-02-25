@@ -7,7 +7,12 @@
 
 .. Shields (https://shields.io/)
 
-|license| |versions| |test-status| |docs| |metacov| |pre-commit|
+|python| |license| |versions| |test-status| |docs| |metacov| |pre-commit|
+
+
+.. |python| image:: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
+    :target: https://www.python.org
+    :alt: Python
 
 .. |license| image:: https://img.shields.io/github/license/99Taxis/systems-engineering-git-python-template.svg
     :target: https://github.com/99Taxis/systems-engineering-git-python-template/blob/master/LICENSE
@@ -49,7 +54,7 @@ Project Setup
 =============
 
 
-Python_
+Python
 --------------
 Start the installation of Python with the command::
 
@@ -63,11 +68,11 @@ Allow the process to complete and verify the Python version was installed sucess
     python --version
 
 
-Poetry_
+Poetry
 ----------------
 Get/install Poetry::
 
-    curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 
 Then we need to enter the project directory and execute some commands::
 
@@ -82,11 +87,6 @@ If there is a problem installing the dependencies::
     poetry cache clear . --all
     rm poetry.lock
     poetry install
-
-.. Links
-.. _Python: https://www.python.org/downloads/
-.. _Poetry: https://github.com/sdispater/poetry
-
 
 
 
@@ -209,20 +209,30 @@ Documentation
     open _build/html/index.html # Opens in browsers
 
 
-Release
----------------
-poetry is not only great for managing package dependencies but also for submitting a package to pypi.
+Code Versioning
+=============
 
-.. code-block::
+|gitflow|
 
-    poetry publish
+``Gitflow`` is a legacy Git workflow that was originally a disruptive and novel strategy for managing Git branches.
 
+|gitflowcommands|
+
+
+.. |gitflow| image:: .github\images\gitflow-diagram.jpg
+   :width: 600
+   :alt: Git-Flow
+
+.. |gitflowcommands| image:: .github\images\gitflow-commands.png
+   :width: 600
+   :alt: Git-Flow-Commands
 
 
 Activity Diagram
 =================
 
-.. |ActivityDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
+.. |ActivityDiagramImage| image:: .github\images\activity-diagram.jpg
+   :width: 600
    :alt: Activity Diagram
 
 |ActivityDiagramImage|
@@ -231,16 +241,19 @@ Activity Diagram
 Deploy Diagram
 ==============
 
-.. |DeployDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
-   :alt: Activity Diagram
+.. |DeployDiagramImage| image:: .github\images\deploy-diagram.png
+   :width: 600
+   :alt: Deploy Diagram
 
 |DeployDiagramImage|
+
 
 CI/CD Diagram
 ==============
 
-.. |CICDDiagramImage| image:: https://avatars.githubusercontent.com/u/4680924?s=200&v=4
-   :alt: Activity Diagram
+.. |CICDDiagramImage| image:: .github\images\cicd.png
+   :width: 600
+   :alt: CI/CD Diagram
 
 |CICDDiagramImage|
 
@@ -343,7 +356,7 @@ Release
 ----------------
 
 * towncrier_ for changelogs
-* `poetry publish`_
+* `Git-Flow`_
 
 
 Documentation
@@ -372,7 +385,7 @@ Documentation
 .. _readthedocs: https://github.com/readthedocs/readthedocs.org
 .. _sphinx_rtd_theme: https://github.com/readthedocs/sphinx_rtd_theme
 .. _towncrier: https://github.com/hawkowl/towncrier
-.. _`poetry publish`: https://poetry.eustace.io/docs/cli/#publish
+.. _`Git-Flow`: https://medium.com/@diegowribeiro/trabalhando-com-git-e-git-flow-no-dia-a-dia-b%C3%A1sico-96a3ae02f8e3
 .. _documentation: https://#
 
 Issues
