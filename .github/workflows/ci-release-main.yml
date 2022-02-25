@@ -174,9 +174,10 @@ jobs:
 
 
       - name: 📄 Artifact | Delete requirements
-        uses: actions/download-artifact@v2
+        uses: geekyeggo/delete-artifact@v1
         with:
           name: requirements.tar.gz
+          failOnError: false
 
       #----------------------------------------------
       #Run coverage tests
@@ -224,3 +225,45 @@ jobs:
         uses: peter-evans/commit-comment@v1
         with:
           body: ${{ steps.pytester-cov.outputs.output-table }}
+
+  build-container:
+    name: Build Container
+    
+    needs: coverage
+
+    if: github.event_name == 'pull_request'
+
+    environment:
+      name: release
+      url: 'https://rancher-finance-stage.99app.com/'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      #----------------------------------------------
+      #Log in to Docker Hub
+      #----------------------------------------------
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      #----------------------------------------------
+      #Build and push
+      #----------------------------------------------
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_IMAGE }}:dev-latest
+            ${{ secrets.DOCKERHUB_IMAGE }}:dev-${{ github.sha }}

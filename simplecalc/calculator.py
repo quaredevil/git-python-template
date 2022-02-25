@@ -88,7 +88,9 @@ def sum_(nums):
         int or float: The sum
 
     """
-    return sum(_check_input(nums))
+    _ret = sum(_check_input(nums))
+    print(_ret)
+    return _ret
 
 
 def difference(nums):
