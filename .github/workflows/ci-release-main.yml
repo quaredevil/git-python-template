@@ -182,6 +182,9 @@ jobs:
           #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
           #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
+      - name: 🔍 Coverage | Read pytester output
+        run: echo "::set-output name=pytester-output::$(cat ${{ steps.pytester-cov.outputs.output-table }})"
+        
       #----------------------------------------------
       #Coverage | Check single file
       #----------------------------------------------
