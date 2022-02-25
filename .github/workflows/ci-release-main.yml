@@ -11,13 +11,16 @@ on:
     - main    
     - 'release/**'
 
+env:
+  python-version: 3.8
+
 jobs: 
 
   build-to-release:
     name: Build Python 🐍
     
-    environment:
-      name: release    
+    #environment:
+    #  name: release    
     
     runs-on: ubuntu-latest
 
@@ -34,7 +37,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.python-version }}
 
       #----------------------------------------------
       #       load cached venv if cache exists
@@ -102,7 +105,7 @@ jobs:
       #----------------------------------------------
       # Artifact | Upload requirements.txt
       #----------------------------------------------
-      - name: 🗎 Artifact | Upload requirements.txt
+      - name: 📄 Artifact | Upload requirements.txt
         uses: actions/upload-artifact@v2
         with:
           name: requirements.txt
@@ -152,7 +155,7 @@ jobs:
       #----------------------------------------------
       # Artifact | Download requirements.txt
       #----------------------------------------------
-      - name: 🗎 Artifact | Download requirements.txt
+      - name: 📄 Artifact | Download requirements.txt
         uses: actions/download-artifact@v2
         with:
           name: requirements.txt
