@@ -105,11 +105,14 @@ jobs:
       #----------------------------------------------
       # Artifact | Upload requirements.txt
       #----------------------------------------------
-      - name: 📄 Artifact | Upload requirements.txt
+      - name: 📄 Artifact | Tar files
+        run: tar -czvf requirements.tar.gz requirements.txt
+
+      - name: 📄 Artifact | Upload requirements
         uses: actions/upload-artifact@v2
         with:
-          name: requirements.txt
-          path: requirements.txt
+          name: requirements.tar.gz
+          path: requirements.tar.gz
 
   coverage:
     name: 🔍 Coverage
@@ -155,12 +158,14 @@ jobs:
       #----------------------------------------------
       # Artifact | Download requirements.txt
       #----------------------------------------------
-      - name: 📄 Artifact | Download requirements.txt
+      - name: 📄 Artifact | Download requirements
         uses: actions/download-artifact@v2
         with:
-          name: requirements.txt
+          name: requirements.tar.gz
           path: .
 
+      - name: 📄 Artifact | Tar files
+        run: tar -cf requirements.tar.gz .
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
