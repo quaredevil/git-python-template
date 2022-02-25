@@ -1,0 +1,114 @@
+name: ci-develop
+
+on:
+  pull_request:
+    branches:
+    - develop
+
+  push:
+    branches:
+    - develop
+
+jobs: 
+
+  build-to-dev:
+    name: Build Python 🐍
+    
+    environment:
+      name: development
+      #url: 'https://rancher-finance-stage.99app.com/'
+      
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8]
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      # Set-up python
+      - name: ⚙️ Build  | Set up Python
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: ⚙️ Build  | Load cached venv
+        id: cached-poetry-dependencies
+        if: "!contains(github.event.head_commit.message, '/nocache')"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.cache
+            ~/.local
+            .venv    
+          #key: poetry      
+          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
+      #----------------------------------------------
+      #  -----  install & configure poetry  -----
+      #----------------------------------------------
+      - name: ⚙️ Build  | Install Poetry
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+          virtualenvs-path: ~/.cache/pypoetry
+
+    
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: |
+          python -m pip install --upgrade pip
+          poetry install        
+
+
+      #----------------------------------------------
+      # Run Linting
+      #----------------------------------------------
+      - name: Run pre-commit hooks (Linting)
+        if: github.event_name == 'push'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit
+          pre-commit install -f --install-hooks
+          pre-commit run --all-files
+
+      #----------------------------------------------
+      # Run python tests with coverage
+      #----------------------------------------------
+      - name: Test with pytest
+        run: |
+          poetry run pytest --cache-clear --cov-report term-missing > pytest-coverage.txt
+
+
+      #----------------------------------------------
+      #Run coverage tests
+      #----------------------------------------------
+      - name: pytest-coverage-commentator
+        if: github.event_name == 'pull_request'
+        uses: coroo/pytest-coverage-commentator@v1.0.2
+        with:
+          pytest-coverage: pytest-coverage.txt
