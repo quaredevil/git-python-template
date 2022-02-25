@@ -113,6 +113,13 @@ jobs:
 
     steps:
       #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: ⬇️ 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+
+      #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
       - name: 🔍 Coverage | test pytester-cov
