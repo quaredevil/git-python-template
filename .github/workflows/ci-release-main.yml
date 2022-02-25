@@ -155,7 +155,7 @@ jobs:
       - name: 🗎 Artifact | Download requirements.txt
         uses: actions/download-artifact@v2
         with:
-          name: requirements.yml
+          name: requirements.txt
           path: .
 
       #----------------------------------------------
