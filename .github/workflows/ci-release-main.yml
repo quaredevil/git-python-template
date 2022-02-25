@@ -97,7 +97,7 @@ jobs:
       # Export requirements from poetry
       #----------------------------------------------
       - name: ⚙️ Build  | Export requirements from poetry
-        #if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
 
@@ -106,18 +106,22 @@ jobs:
       # Artifact | Upload requirements.txt
       #----------------------------------------------
       - name: 📄 Artifact | Tar files
+        if: github.event_name == 'pull_request'
         run: tar -czvf requirements.tar.gz requirements.txt
 
       - name: 📄 Artifact | Upload requirements
         uses: actions/upload-artifact@v2
+        if: github.event_name == 'pull_request'
         with:
           name: requirements.tar.gz
           path: requirements.tar.gz
 
   coverage:
-    name: 🔍 Coverage
+    name: Coverage 🔍
     
     needs: build-to-release
+
+    if: github.event_name == 'pull_request'
 
     environment:
       name: release
@@ -164,8 +168,16 @@ jobs:
           name: requirements.tar.gz
           path: .
 
-      - name: 📄 Artifact | Tar files
+
+      - name: 📄 Artifact | Extract tar files
         run: tar -xvf requirements.tar.gz
+
+
+      - name: 📄 Artifact | Delete requirements
+        uses: actions/download-artifact@v2
+        with:
+          name: requirements.tar.gz
+
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
