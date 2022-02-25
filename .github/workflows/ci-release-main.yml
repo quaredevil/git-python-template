@@ -165,7 +165,7 @@ jobs:
           path: .
 
       - name: 📄 Artifact | Tar files
-        run: tar -cf requirements.tar.gz .
+        run: tar -xvf requirements.tar.gz
       #----------------------------------------------
       #Run coverage tests
       #----------------------------------------------
@@ -183,7 +183,9 @@ jobs:
           #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
       - name: 🔍 Coverage | Read pytester output
-        run: echo "::set-output name=pytester-output::$(cat ${{ steps.pytester-cov.outputs.output-table }})"
+        run: echo $FOR_ECHO
+        env:
+          FOR_ECHO: ${{ steps.pytester-cov.outputs.output-table }}
         
       #----------------------------------------------
       #Coverage | Check single file
