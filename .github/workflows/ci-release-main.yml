@@ -176,7 +176,7 @@ jobs:
           PYTEST_ADDOPTS: -v -x --cov=simplecalc --cov-config=setup.cfg --cov-report=term
         with:
           pytest-root-dir: '.'
-          cov-omit-list: 'doc/*, simplecalc/tests/*'
+          cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
           cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
           cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
           #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
