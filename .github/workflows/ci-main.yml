@@ -1,13 +1,9 @@
-name: ci-release
+name: ci-main-production
 
 on:
   pull_request:
     branches:
-    - 'release/**'
-
-  push:
-    branches:
-    - 'release/**'
+    - main
 
 env:
   python-version: 3.8
@@ -244,6 +240,15 @@ jobs:
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
 
+      #----------------------------------------------
+      # Get Some informations
+      #----------------------------------------------
+      - name: Get some informations
+        id: repository_branch_name
+        run: |
+          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
           
       #----------------------------------------------
       #Log in to Docker Hub
@@ -255,6 +260,16 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       
 
+      - name: Build base image
+        run: |
+          echo $SOURCE_NAME
+          echo $SOURCE_BRANCH
+          echo $SOURCE_TAG
+        env:
+          SOURCE_NAME: ${{ steps.repository_branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.repository_branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG: ${{ steps.repository_branch_name.outputs.SOURCE_TAG }}
+
       #----------------------------------------------
       #Build and push
       #----------------------------------------------
@@ -265,5 +280,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:release-latest
-            ${{ secrets.DOCKERHUB_IMAGE }}:release-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_IMAGE }}:qa-latest
+            ${{ secrets.DOCKERHUB_IMAGE }}:qa-${{ github.sha }}
