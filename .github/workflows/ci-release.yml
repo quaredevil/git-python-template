@@ -31,7 +31,7 @@ jobs:
         run: |
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
           echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
-          echo ::set-output name=SOURCE_RELEASE_VERSION_V::${GITHUB_REF#refs/heads/release/v*}
+          echo ::set-output name=SOURCE_RELEASE_VERSION_V::${GITHUB_REF#refs/heads/release/v}
 
       - name: Check some informations
         run: |
