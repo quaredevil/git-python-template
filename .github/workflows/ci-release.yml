@@ -1,0 +1,318 @@
+name: ci-release
+
+on:
+  pull_request:
+    branches:
+    - 'release/**'
+
+  push:
+    branches:
+    - 'release/**'
+
+env:
+  python-version: 3.8
+
+jobs: 
+
+  build-to-release:
+    name: Build Python 🐍
+    
+    #environment:
+    #  name: release    
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      # Informations
+      #----------------------------------------------
+      - name: Get some informations
+        id: get_some_informations
+        run: |
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
+
+      - name: Check some informations
+        run: |
+          echo $SOURCE_BRANCH
+          echo $SOURCE_RELEASE_VERSION
+        env:
+          SOURCE_BRANCH: ${{ steps.get_some_informations.outputs.SOURCE_BRANCH }}
+          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
+
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      # Set-up python
+      - name: ⚙️ Build  | Set up Python
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.python-version }}
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: ⚙️ Build  | Load cached venv
+        id: cached-poetry-dependencies
+        if: "!contains(github.event.head_commit.message, '/nocache')"
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.cache
+            ~/.local
+            .venv    
+          #key: poetry      
+          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
+              ${{ runner.os }}-build-
+
+      #----------------------------------------------
+      #  -----  install & configure poetry  -----
+      #----------------------------------------------
+      - name: ⚙️ Build  | Install Poetry
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+          virtualenvs-path: ~/.cache/pypoetry
+
+      #----------------------------------------------
+      # install dependencies if cache does not exist
+      #----------------------------------------------
+      - name: ⚙️ Build  | Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: |
+          python -m pip install --upgrade pip
+          poetry install 
+
+      
+
+      #----------------------------------------------
+      # Run Linting
+      #----------------------------------------------
+      - name: 🔧 Linting | Run pre-commit hooks
+        if: github.event_name == 'push'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pre-commit
+          pre-commit install -f --install-hooks
+          pre-commit run --all-files
+
+      #----------------------------------------------
+      # Export requirements from poetry
+      #----------------------------------------------
+      - name: ⚙️ Build  | Export requirements from poetry
+        if: github.event_name == 'pull_request'
+        run: |
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+ 
+      #----------------------------------------------
+      # Artifact | Upload requirements.txt
+      #----------------------------------------------
+      - name: 📄 Artifact | Tar files
+        if: github.event_name == 'pull_request'
+        run: tar -czvf requirements.tar.gz requirements.txt
+
+      - name: 📄 Artifact | Upload requirements
+        uses: actions/upload-artifact@v2
+        if: github.event_name == 'pull_request'
+        with:
+          name: requirements.tar.gz
+          path: requirements.tar.gz
+          
+  coverage:
+    name: Coverage 🔍
+    
+    needs: build-to-release
+
+    if: github.event_name == 'pull_request'
+
+    environment:
+      name: release
+    
+    env:
+      COVERAGE_SINGLE: 60
+      COVERAGE_TOTAL: 60
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: ⚙️ Build  | Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.cache
+            ~/.local
+            .venv    
+          #key: poetry      
+          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
+      #----------------------------------------------
+      # Artifact | Download requirements.txt
+      #----------------------------------------------
+      - name: 📄 Artifact | Download requirements
+        uses: actions/download-artifact@v2
+        with:
+          name: requirements.tar.gz
+          path: .
+
+
+      - name: 📄 Artifact | Extract tar files
+        run: tar -xvf requirements.tar.gz
+
+
+      - name: 📄 Artifact | Delete requirements
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: requirements.tar.gz
+          failOnError: false
+
+      #----------------------------------------------
+      #Run coverage tests
+      #----------------------------------------------
+      - name: 🔍 Coverage | test pytester-cov
+        id: pytester-cov
+        uses: alexanderdamiani/pytester-cov@v1.2.3
+        env:
+          PYTEST_ADDOPTS: -v -x --cov=simplecalc --cov-config=setup.cfg --cov-report=term
+        with:
+          pytest-root-dir: '.'
+          cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
+          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+          #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
+          #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+
+      - name: 🔍 Coverage | Read pytester output
+        run: echo $FOR_ECHO
+        env:
+          FOR_ECHO: ${{ steps.pytester-cov.outputs.output-table }}
+        
+      #----------------------------------------------
+      #Coverage | Check single file
+      #----------------------------------------------
+      - name: 🔍 Coverage | single fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+        run: |
+          echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
+          exit 1
+
+      #----------------------------------------------
+      #Coverage | Check total file
+      #----------------------------------------------
+      - name: 🔍 Coverage | total fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
+        run: |
+          echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
+          exit 1
+
+      #----------------------------------------------
+      #Coverage | commit table generated
+      #----------------------------------------------
+      - name: 🔍 Coverage | Commit pytest coverage table
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: ${{ steps.pytester-cov.outputs.output-table }}
+
+  build-container:
+    name: Build Container
+    
+    needs: coverage
+
+    if: github.event_name == 'pull_request'
+
+    environment:
+      name: release
+      url: 'https://rancher-finance-stage.99app.com/'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      #----------------------------------------------
+      #This is the a separate action that sets up buildx runner
+      #----------------------------------------------
+      - name: 🐳 Container | Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      #----------------------------------------------
+      #       load cached if cache exists
+      #----------------------------------------------
+      - name: ⚡️ Cache | Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      #----------------------------------------------
+      #Log in to Docker Hub
+      #----------------------------------------------
+      - name: 🐳 Container | Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+
+      #----------------------------------------------
+      #Build and push
+      #----------------------------------------------
+      - name: 🐳 Container | Build and push
+        uses: docker/build-push-action@v2
+        env:
+          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
+          #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
+          #cache-from: type=gha
+          #cache-to: type=gha,mode=max
+          tags: |
+            ${{ secrets.DOCKERHUB_IMAGE }}:release-$SOURCE_RELEASE_VERSION
+            ${{ secrets.DOCKERHUB_IMAGE }}:$SOURCE_RELEASE_VERSION-${{ github.sha }}
+      
+      #----------------------------------------------
+      #Clear old cache
+      #----------------------------------------------
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: 🐳 Container | Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
