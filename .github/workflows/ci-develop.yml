@@ -12,7 +12,6 @@ on:
 
 env:
   python-version: 3.8
-  os-runs-on: ubuntu-latest
 
 jobs: 
 
@@ -23,7 +22,7 @@ jobs:
       name: development
       #url: 'https://rancher-finance-stage.99app.com/'
 
-    runs-on: ${{ env.os-runs-on }}
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
