@@ -298,7 +298,6 @@ jobs:
       #----------------------------------------------
       #Build and push
       #----------------------------------------------
-<<<<<<< HEAD:.github/workflows/ci-release.yml
       - name: Check some informations
         run: |
           echo $SOURCE_BRANCH
@@ -311,9 +310,6 @@ jobs:
         
 
       - name: 🐳 Container | Build and push
-=======
-      - name: Build and push
->>>>>>> 76bc87311bab7dc3e80156a68da047aff7b96f61:.github/workflows/ci-release-main.yml
         uses: docker/build-push-action@v2
         env:
           SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
@@ -323,7 +319,6 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-<<<<<<< HEAD:.github/workflows/ci-release.yml
             ${{ secrets.DOCKERHUB_IMAGE }}:r$SOURCE_RELEASE_VERSION_V
             ${{ secrets.DOCKERHUB_IMAGE }}:$SOURCE_RELEASE_VERSION-${{ github.sha }}
       
@@ -337,7 +332,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-=======
-            ${{ secrets.DOCKERHUB_IMAGE }}:qa-latest
-            ${{ secrets.DOCKERHUB_IMAGE }}:qa-${{ github.sha }}
->>>>>>> 76bc87311bab7dc3e80156a68da047aff7b96f61:.github/workflows/ci-release-main.yml
