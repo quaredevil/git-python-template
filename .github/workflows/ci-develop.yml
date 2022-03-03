@@ -16,6 +16,7 @@ jobs:
     
     environment:
       name: development
+      #url: 'https://rancher-finance-stage.99app.com/'
       
     
     strategy:
@@ -35,16 +36,16 @@ jobs:
         uses: actions/checkout@v2
 
       # Set-up python
-      - name: ⚙️ Build | Set up Python
+      - name: ⚙️ Build  | Set up Python
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ env.python-version }}
+          python-version: 3.8
 
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: ⚡️ Cache | Load cached venv
+      - name: ⚙️ Build  | Load cached venv
         id: cached-poetry-dependencies
         if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
@@ -64,7 +65,7 @@ jobs:
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
-      - name: ⚙️ Build | Install Poetry
+      - name: ⚙️ Build  | Install Poetry
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
@@ -73,10 +74,11 @@ jobs:
           installer-parallel: true
           virtualenvs-path: ~/.cache/pypoetry
 
+    
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
-      - name: ⚙️ Build | Install dependencies
+      - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
@@ -86,7 +88,7 @@ jobs:
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
-      - name: 🔧 Linting | Run pre-commit hooks
+      - name: Run pre-commit hooks (Linting)
         if: github.event_name == 'push'
         run: |
           python -m pip install --upgrade pip
@@ -95,8 +97,18 @@ jobs:
           pre-commit run --all-files
 
       #----------------------------------------------
-      # Run python tests
+      # Run python tests with coverage
       #----------------------------------------------
-      - name: 🔍 Test | Test with pytest
+      - name: Test with pytest
         run: |
-          poetry run pytest --cache-clear --cov-report term-missing
+          poetry run pytest --cache-clear --cov-report term-missing > pytest-coverage.txt
+
+
+      #----------------------------------------------
+      #Run coverage tests
+      #----------------------------------------------
+      - name: pytest-coverage-commentator
+        if: github.event_name == 'pull_request'
+        uses: coroo/pytest-coverage-commentator@v1.0.2
+        with:
+          pytest-coverage: pytest-coverage.txt
