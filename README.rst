@@ -53,7 +53,6 @@
 Project Setup
 =============
 
-
 Python
 --------------
 Start the installation of Python with the command::
