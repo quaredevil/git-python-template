@@ -41,7 +41,7 @@ jobs:
         env:
           SOURCE_BRANCH: ${{ steps.get_some_informations.outputs.SOURCE_BRANCH }}
           SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
-          SOURCE_RELEASE_VERSION_V: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
+          SOURCE_RELEASE_VERSION_V: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION_V }}
 
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -300,7 +300,7 @@ jobs:
         env:
           SOURCE_BRANCH: ${{ steps.get_some_informations.outputs.SOURCE_BRANCH }}
           SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
-          SOURCE_RELEASE_VERSION_V: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
+          SOURCE_RELEASE_VERSION_V: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION_V }}
         
 
       - name: 🐳 Container | Build and push
@@ -319,8 +319,8 @@ jobs:
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
           tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:r${{SOURCE_RELEASE_VERSION_V}}
-            ${{ secrets.DOCKERHUB_IMAGE }}:${{SOURCE_RELEASE_VERSION}}-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_IMAGE }}:r$SOURCE_RELEASE_VERSION_V
+            ${{ secrets.DOCKERHUB_IMAGE }}:$SOURCE_RELEASE_VERSION-${{ github.sha }}
       
       #----------------------------------------------
       #Clear old cache
