@@ -23,6 +23,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      #----------------------------------------------
+      # Informations
+      #----------------------------------------------
+      - name: Get some informations
+        id: get_some_informations
+        run: |
+          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
+
+      - name: Check some informations
+        run: |
+          echo $SOURCE_BRANCH
+          echo $SOURCE_RELEASE_VERSION
+        env:
+          SOURCE_BRANCH: ${{ steps.get_some_informations.outputs.SOURCE_BRANCH }}
+          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
 
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -37,25 +53,10 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
 
-      - name: Branch name
-        id: branch_name
-        if: github.event_name == 'pull_request'
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-
-      - name: Branch name
-        id: branch_name
-        if: github.event_name == 'pull_request'
-        run: |
-          echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}   
       #----------------------------------------------
       #       load cached venv if cache exists
       #----------------------------------------------
-      - name: ⚡️ Cache  | Load cached venv
+      - name: ⚙️ Build  | Load cached venv
         id: cached-poetry-dependencies
         if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
@@ -70,7 +71,6 @@ jobs:
           restore-keys: |
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
               ${{ runner.os }}-build-
-              ${{ runner.os }}-
 
       #----------------------------------------------
       #  -----  install & configure poetry  -----
@@ -114,7 +114,7 @@ jobs:
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-
+ 
       #----------------------------------------------
       # Artifact | Upload requirements.txt
       #----------------------------------------------
@@ -128,7 +128,7 @@ jobs:
         with:
           name: requirements.tar.gz
           path: requirements.tar.gz
- 
+          
   coverage:
     name: Coverage 🔍
     
@@ -290,6 +290,8 @@ jobs:
       #----------------------------------------------
       - name: 🐳 Container | Build and push
         uses: docker/build-push-action@v2
+        env:
+          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
         with:
           context: .
           platforms: linux/amd64
@@ -301,7 +303,8 @@ jobs:
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
           tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_IMAGE }}:release-$SOURCE_RELEASE_VERSION
+            ${{ secrets.DOCKERHUB_IMAGE }}:$SOURCE_RELEASE_VERSION-${{ github.sha }}
       
       #----------------------------------------------
       #Clear old cache
