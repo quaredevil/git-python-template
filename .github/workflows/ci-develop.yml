@@ -9,6 +9,11 @@ on:
     branches:
     - develop
 
+
+env:
+  python-version: 3.8
+  os-runs-on: ubuntu-latest
+
 jobs: 
 
   build-to-dev:
@@ -17,18 +22,10 @@ jobs:
     environment:
       name: development
       #url: 'https://rancher-finance-stage.99app.com/'
-      
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.8]
-        os: [ubuntu-latest]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ env.os-runs-on }}
 
     steps:
-
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
@@ -40,7 +37,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: ${{ env.python-version }}
 
       #----------------------------------------------
       #       load cached venv if cache exists
@@ -60,7 +57,6 @@ jobs:
           restore-keys: |
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
               ${{ runner.os }}-build-
-              ${{ runner.os }}-
 
       #----------------------------------------------
       #  -----  install & configure poetry  -----
@@ -74,15 +70,14 @@ jobs:
           installer-parallel: true
           virtualenvs-path: ~/.cache/pypoetry
 
-    
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
-      - name: Install dependencies
+      - name: ⚙️ Build  | Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
-          poetry install        
+          poetry install 
 
 
       #----------------------------------------------
