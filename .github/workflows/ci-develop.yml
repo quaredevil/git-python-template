@@ -101,7 +101,7 @@ jobs:
       #----------------------------------------------
       - name: Test with pytest
         run: |
-          poetry run pytest --cache-clear --cov-report term-missing > pytest-coverage.txt
+          poetry run pytest --cache-clear --cov-report term-missing
 
 
       #----------------------------------------------
