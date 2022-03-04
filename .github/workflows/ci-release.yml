@@ -299,19 +299,18 @@ jobs:
       #----------------------------------------------
       - name: 🐳 Container | Build and push
         uses: docker/build-push-action@v2
-        env:
-          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
         with:
           context: .
           platforms: linux/amd64
           push: true
+          tags: ${{ steps.prepare.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
-          tags: ${{ steps.prepare.outputs.python-version }}
+          
       
       #----------------------------------------------
       #Clear old cache
