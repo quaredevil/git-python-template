@@ -110,6 +110,7 @@ jobs:
     needs: build-container-main
 
     environment:
+      name: production
       url: 'https://github.com/quaredevil/git-python-template/releases'
 
 
