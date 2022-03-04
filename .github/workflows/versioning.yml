@@ -1,0 +1,13 @@
+name: Keep your action versions up-to-date by automatically promoting a major version each time a minor release is created
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  actions-tagger:
+    runs-on: windows-latest
+    steps:
+      - uses: Actions-R-Us/actions-tagger@latest
+        with:
+          publish_latest_tag: true
