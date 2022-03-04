@@ -1,7 +1,6 @@
 name: ci-release
 
 on:
-  
   push:
     branches:
     - 'release/**'
