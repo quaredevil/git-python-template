@@ -148,9 +148,9 @@ jobs:
     environment:
       name: release
     
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
+    #env:
+    #  COVERAGE_SINGLE: 60
+    #  COVERAGE_TOTAL: 60
 
     runs-on: ubuntu-latest
 
@@ -211,10 +211,10 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
-          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
-          #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
-          #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+          cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
+          cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
       - name: 🔍 Coverage | Read pytester output
         run: echo $FOR_ECHO
@@ -299,21 +299,18 @@ jobs:
       #----------------------------------------------
       - name: 🐳 Container | Build and push
         uses: docker/build-push-action@v2
-        env:
-          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
         with:
           context: .
           platforms: linux/amd64
           push: true
+          tags: ${{ steps.prepare.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
-          tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:alpha
-            ${{ secrets.DOCKERHUB_IMAGE }}:${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}-alpha-${{ github.sha }}
+          
       
       #----------------------------------------------
       #Clear old cache
