@@ -2,8 +2,8 @@ name: ci-main-production
 
 on:
   push:
-    branches:
-    - 'main'
+    tags:
+      - 'v*'
 
 env:
   python-version: 3.8
@@ -40,9 +40,9 @@ jobs:
 
           TAGS="${DOCKER_IMAGE}:${VERSION}"
 
-          if [[ $GITHUB_REF == refs/heads/release/* ]]; then
-            VERSION="${GITHUB_REF#refs/heads/release/v}-$VERSION"
-            echo "(if) refs/heads/release: $VERSION"
+          if [[ $GITHUB_REF == refs/tag/* ]]; then
+            VERSION="${GITHUB_REF#refs/tag/v}-$VERSION"
+            echo "(if) refs/tag: $VERSION"
 
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
