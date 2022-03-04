@@ -39,7 +39,7 @@ jobs:
           TAGS="${DOCKER_IMAGE}:${VERSION}"
 
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION="${GITHUB_REF#refs/tags/v}-$VERSION"
+            VERSION="${GITHUB_REF#refs/tags/v}"
             echo "(if) refs/tags: $VERSION"
 
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
