@@ -1,10 +1,7 @@
 name: ci-release
 
 on:
-  pull_request:
-    branches:
-    - 'main'
-
+  
   push:
     branches:
     - 'release/**'
