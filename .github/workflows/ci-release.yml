@@ -24,44 +24,28 @@ jobs:
 
     steps:
       #----------------------------------------------
-      # Informations
-      #----------------------------------------------
-      - name: ℹ️ | Get some informations
-        id: get_some_informations
-        run: |
-          echo ::set-output name=SOURCE_FULL_NAME::${GITHUB_REF#refs/heads/}
-          echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
-
-      - name: ℹ️ | Check some informations
-        run: |
-          echo $SOURCE_FULL_NAME
-          echo $SOURCE_RELEASE_VERSION
-        env:
-          SOURCE_FULL_NAME: ${{ steps.get_some_informations.outputs.SOURCE_FULL_NAME }}
-          SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
-
-      #----------------------------------------------
       # Prepare 
       #----------------------------------------------
       - name: ℹ️  Container | Prepare Version
-        id: prep
+        id: prepare
         run: |
+          echo $GITHUB_REF
+
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
           VERSION=alpha
 
           TAGS="${DOCKER_IMAGE}:${VERSION}"
 
           if [[ $GITHUB_REF == refs/heads/release/* ]]; then
-            VERSION=${GITHUB_REF#refs/heads/release/v}-$VERSION
+            VERSION="${GITHUB_REF#refs/heads/release/v}-$VERSION"
+            echo $VERSION
+
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
 
           echo ::set-output name=tags::${TAGS}
-
-      - name: ℹ️ | TEST
-        run: |
-          echo ${{ steps.prep.outputs.TAGS }}
-        
+          echo $TAGS
+       
 
       #----------------------------------------------
       #       check-out repo and set-up python
