@@ -3,15 +3,13 @@ name: ci-main
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
 
-env:
-  python-version: 3.8
 
 jobs: 
 
   build-container:
-    name: Build Container
+    name: Build Container 🐳
 
     environment:
       name: production
@@ -105,3 +103,31 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-main-cache
           mv /tmp/.buildx-main-cache-new /tmp/.buildx-main-cache
+  
+  github-release:
+    name: Releases 🔖
+
+    needs: build-container
+
+    environment:
+      url: "${{ github.server_url }}/${{ github.repository }}/releases"
+
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+
+      #----------------------------------------------
+      # Releases 
+      #----------------------------------------------
+      - name: 🔖 Release | Publish Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
