@@ -1,9 +1,9 @@
-name: ci-main-tag-production
+name: ci-main-production
 
 on:
-  create:
-    tags:
-      - v*
+  push:
+    branches:
+    - 'main'
 
 env:
   python-version: 3.8
@@ -25,6 +25,30 @@ jobs:
       #----------------------------------------------
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
+
+
+      #----------------------------------------------
+      # Prepare 
+      #----------------------------------------------
+      - name: ℹ️  Prepare | Version
+        id: prepare
+        run: |
+          echo "GITHUB_REF: $GITHUB_REF"
+
+          DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
+          VERSION=latest
+
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+
+          if [[ $GITHUB_REF == refs/heads/release/* ]]; then
+            VERSION="${GITHUB_REF#refs/heads/release/v}-$VERSION"
+            echo "(if) refs/heads/release: $VERSION"
+
+            TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+          echo "Tags: $TAGS"
 
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
