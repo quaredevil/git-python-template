@@ -17,8 +17,8 @@ jobs:
   build-to-release:
     name: Build Python 🐍
     
-    #environment:
-    #  name: release    
+    environment:
+      name: release
     
     runs-on: ubuntu-latest
 
@@ -43,7 +43,7 @@ jobs:
       #----------------------------------------------
       # Prepare 
       #----------------------------------------------
-      - name: 🐳 Container | Prepare Version
+      - name: ℹ️  Container | Prepare Version
         id: prep
         run: |
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
@@ -51,8 +51,8 @@ jobs:
 
           TAGS="${DOCKER_IMAGE}:${VERSION}"
 
-          if [[ $GITHUB_REF == refs/release/* ]]; then
-            VERSION=${GITHUB_REF#refs/release/v}-$VERSION
+          if [[ $GITHUB_REF == refs/heads/release/* ]]; then
+            VERSION=${GITHUB_REF#refs/heads/release/v}-$VERSION
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
 
