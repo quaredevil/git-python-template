@@ -28,16 +28,7 @@ jobs:
           echo "GITHUB_REF: $GITHUB_REF"
 
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
-          VERSION=dev
-
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-
-          if [[ $GITHUB_REF == refs/heads/develop/* ]]; then
-            VERSION="${GITHUB_REF#refs/heads/develop/v}-$VERSION"
-            echo "(if) refs/heads/develop: $VERSION"
-
-            TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
-          fi
+          TAGS="${DOCKER_IMAGE}:dev,${DOCKER_IMAGE}:dev-${{ github.sha }}"
 
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS"
