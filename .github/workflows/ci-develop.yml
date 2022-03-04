@@ -20,30 +20,6 @@ jobs:
 
     steps:
       #----------------------------------------------
-      # Prepare 
-      #----------------------------------------------
-      - name: ℹ️  Prepare | Version
-        id: prepare
-        run: |
-          echo "GITHUB_REF: $GITHUB_REF"
-
-          DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
-          VERSION=dev
-
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-
-          if [[ $GITHUB_REF == refs/heads/develop/* ]]; then
-            VERSION="${GITHUB_REF#refs/heads/develop/v}-$VERSION"
-            echo "(if) refs/heads/develop: $VERSION"
-
-            TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
-          fi
-
-          echo ::set-output name=tags::${TAGS}
-          echo "Tags: $TAGS"
-       
-
-      #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
       - name: 💾 Repository | Check out
@@ -255,6 +231,20 @@ jobs:
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
 
+      #----------------------------------------------
+      # Prepare 
+      #----------------------------------------------
+      - name: ℹ️  Prepare | Version
+        id: prepare
+        run: |
+          echo "GITHUB_REF: $GITHUB_REF"
+
+          DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
+          TAGS="${DOCKER_IMAGE}:dev,${DOCKER_IMAGE}:dev-${{ github.sha }}"
+
+          echo ::set-output name=tags::${TAGS}
+          echo "Tags: $TAGS"
+          
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
