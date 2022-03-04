@@ -3,7 +3,7 @@ name: ci-release
 on:
   pull_request:
     branches:
-    - 'release/**'
+    - 'main'
 
   push:
     branches:
@@ -26,13 +26,13 @@ jobs:
       #----------------------------------------------
       # Informations
       #----------------------------------------------
-      - name: Get some informations
+      - name: ℹ️ | Get some informations
         id: get_some_informations
         run: |
           echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
           echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
 
-      - name: Check some informations
+      - name: ℹ️ | Check some informations
         run: |
           echo $SOURCE_BRANCH
           echo $SOURCE_RELEASE_VERSION
@@ -239,7 +239,7 @@ jobs:
           body: ${{ steps.pytester-cov.outputs.output-table }}
 
   build-container:
-    name: Build Container
+    name: Build Container 🐳
     
     needs: coverage
 
