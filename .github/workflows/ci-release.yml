@@ -29,16 +29,46 @@ jobs:
       - name: ℹ️ | Get some informations
         id: get_some_informations
         run: |
-          echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+          echo ::set-output name=SOURCE_FULL_NAME::${GITHUB_REF#refs/heads/}
           echo ::set-output name=SOURCE_RELEASE_VERSION::${GITHUB_REF#refs/heads/release/}
 
       - name: ℹ️ | Check some informations
         run: |
-          echo $SOURCE_BRANCH
+          echo $SOURCE_FULL_NAME
           echo $SOURCE_RELEASE_VERSION
         env:
-          SOURCE_BRANCH: ${{ steps.get_some_informations.outputs.SOURCE_BRANCH }}
+          SOURCE_FULL_NAME: ${{ steps.get_some_informations.outputs.SOURCE_FULL_NAME }}
           SOURCE_RELEASE_VERSION: ${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}
+
+      #----------------------------------------------
+      # Prepare 
+      #----------------------------------------------
+      - name: Prepare
+        id: prep
+        run: |
+          DOCKER_IMAGE=metcalfc/docker-action-examples
+          VERSION=edge
+
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          fi
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            VERSION=nightly
+          fi
+
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+            TAGS="$TAGS,${DOCKER_IMAGE}:latest"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+
+      - name: ℹ️ | TEST
+        run: |
+          echo ${{ steps.prep.outputs.TAGS }}
+          echo $SOURCE_TAG_VERSION
+        
 
       #----------------------------------------------
       #       check-out repo and set-up python
@@ -303,8 +333,8 @@ jobs:
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
           tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:release-$SOURCE_RELEASE_VERSION
-            ${{ secrets.DOCKERHUB_IMAGE }}:$SOURCE_RELEASE_VERSION-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_IMAGE }}:alpha
+            ${{ secrets.DOCKERHUB_IMAGE }}:${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}-alpha-${{ github.sha }}
       
       #----------------------------------------------
       #Clear old cache
