@@ -8,7 +8,7 @@ on:
 
 jobs: 
 
-  build-container:
+  build-container-main:
     name: Build Container 🐳
 
     environment:
@@ -107,10 +107,10 @@ jobs:
   github-release:
     name: Releases 🔖
 
-    needs: build-container
+    needs: build-container-main
 
     environment:
-      url: "${{ github.server_url }}/${{ github.repository }}/releases"
+      url: 'https://github.com/quaredevil/git-python-template/releases'
 
 
     runs-on: ubuntu-latest
