@@ -148,9 +148,9 @@ jobs:
     environment:
       name: release
     
-    env:
-      COVERAGE_SINGLE: 60
-      COVERAGE_TOTAL: 60
+    #env:
+    #  COVERAGE_SINGLE: 60
+    #  COVERAGE_TOTAL: 60
 
     runs-on: ubuntu-latest
 
@@ -211,10 +211,10 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
-          cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
-          #cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
-          #cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+          cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
+          cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
       - name: 🔍 Coverage | Read pytester output
         run: echo $FOR_ECHO
@@ -311,9 +311,7 @@ jobs:
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
           #cache-from: type=gha
           #cache-to: type=gha,mode=max
-          tags: |
-            ${{ secrets.DOCKERHUB_IMAGE }}:alpha
-            ${{ secrets.DOCKERHUB_IMAGE }}:${{ steps.get_some_informations.outputs.SOURCE_RELEASE_VERSION }}-alpha-${{ github.sha }}
+          tags: ${{ steps.prepare.outputs.python-version }}
       
       #----------------------------------------------
       #Clear old cache
