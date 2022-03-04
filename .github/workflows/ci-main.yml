@@ -8,7 +8,7 @@ on:
 
 jobs: 
 
-  build-container-main:
+  build-container-to-main:
     name: Build Container 🐳
 
     environment:
@@ -38,9 +38,9 @@ jobs:
 
           TAGS="${DOCKER_IMAGE}:${VERSION}"
 
-          if [[ $GITHUB_REF == refs/tag/* ]]; then
-            VERSION="${GITHUB_REF#refs/tag/v}-$VERSION"
-            echo "(if) refs/tag: $VERSION"
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}-$VERSION"
+            echo "(if) refs/tags: $VERSION"
 
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
@@ -107,7 +107,7 @@ jobs:
   github-release:
     name: Releases 🔖
 
-    needs: build-container-main
+    needs: build-container-to-main
 
     environment:
       name: production

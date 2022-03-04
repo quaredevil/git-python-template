@@ -1,30 +1,48 @@
 name: ci-develop
 
 on:
-  pull_request:
-    branches:
-    - develop
-
   push:
     branches:
-    - develop
-
+    - 'develop'
 
 env:
   python-version: 3.8
 
 jobs: 
 
-  build-to-dev:
+  build-to-develop:
     name: Build Python 🐍
     
     environment:
       name: development
-      #url: 'https://rancher-finance-stage.99app.com/'
-
+    
     runs-on: ubuntu-latest
 
     steps:
+      #----------------------------------------------
+      # Prepare 
+      #----------------------------------------------
+      - name: ℹ️  Prepare | Version
+        id: prepare
+        run: |
+          echo "GITHUB_REF: $GITHUB_REF"
+
+          DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
+          VERSION=dev
+
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+
+          if [[ $GITHUB_REF == refs/heads/develop/* ]]; then
+            VERSION="${GITHUB_REF#refs/heads/develop/v}-$VERSION"
+            echo "(if) refs/heads/develop: $VERSION"
+
+            TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
+          fi
+
+          echo ::set-output name=tags::${TAGS}
+          echo "Tags: $TAGS"
+       
+
       #----------------------------------------------
       #       check-out repo and set-up python
       #----------------------------------------------
@@ -37,6 +55,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.python-version }}
+
 
       #----------------------------------------------
       #       load cached venv if cache exists
@@ -69,6 +88,7 @@ jobs:
           installer-parallel: true
           virtualenvs-path: ~/.cache/pypoetry
 
+
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
@@ -78,7 +98,7 @@ jobs:
           python -m pip install --upgrade pip
           poetry install 
 
-
+      
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
@@ -90,9 +110,203 @@ jobs:
           pre-commit install -f --install-hooks
           pre-commit run --all-files
 
+
       #----------------------------------------------
-      # Run python tests with coverage
+      # Export requirements from poetry
       #----------------------------------------------
-      - name: Test with pytest
+      - name: ⚙️ Build  | Export requirements from poetry
+        #if: github.event_name == 'pull_request'
         run: |
-          poetry run pytest --cache-clear --cov-report term-missing
+          poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+ 
+      #----------------------------------------------
+      # Artifact | Upload requirements.txt
+      #----------------------------------------------
+      - name: 📄 Artifact | Tar files
+        #if: github.event_name == 'pull_request'
+        run: tar -czvf requirements.tar.gz requirements.txt
+
+      - name: 📄 Artifact | Upload requirements
+        uses: actions/upload-artifact@v2
+        #if: github.event_name == 'pull_request'
+        with:
+          name: requirements.tar.gz
+          path: requirements.tar.gz
+          
+  coverage:
+    name: Coverage 🔍
+    
+    needs: build-to-develop
+
+    environment:
+      name: development
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+      - name: ⚙️ Build  | Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pypoetry
+            ~/.cache
+            ~/.local
+            .venv    
+          #key: poetry      
+          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
+      #----------------------------------------------
+      # Artifact | Download requirements.txt
+      #----------------------------------------------
+      - name: 📄 Artifact | Download requirements
+        uses: actions/download-artifact@v2
+        with:
+          name: requirements.tar.gz
+          path: .
+
+
+      - name: 📄 Artifact | Extract tar files
+        run: tar -xvf requirements.tar.gz
+
+
+      - name: 📄 Artifact | Delete requirements
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: requirements.tar.gz
+          failOnError: false
+
+      #----------------------------------------------
+      #Run coverage tests
+      #----------------------------------------------
+      - name: 🔍 Coverage | test pytester-cov
+        id: pytester-cov
+        uses: alexanderdamiani/pytester-cov@v1.2.3
+        env:
+          PYTEST_ADDOPTS: -v -x --cov=simplecalc --cov-config=setup.cfg --cov-report=term
+        with:
+          pytest-root-dir: '.'
+          cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
+          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
+          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
+          cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
+          cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
+
+      - name: 🔍 Coverage | Read pytester output
+        run: echo $FOR_ECHO
+        env:
+          FOR_ECHO: ${{ steps.pytester-cov.outputs.output-table }}
+        
+      #----------------------------------------------
+      #Coverage | Check single file
+      #----------------------------------------------
+      - name: 🔍 Coverage | single fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-single-fail == 'true' }}
+        run: |
+          echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
+          exit 1
+
+      #----------------------------------------------
+      #Coverage | Check total file
+      #----------------------------------------------
+      - name: 🔍 Coverage | total fail - exit
+        if: ${{ steps.pytester-cov.outputs.cov-threshold-total-fail == 'true' }}
+        run: |
+          echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
+          exit 1
+
+      #----------------------------------------------
+      #Coverage | commit table generated
+      #----------------------------------------------
+      - name: 🔍 Coverage | Commit pytest coverage table
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: ${{ steps.pytester-cov.outputs.output-table }}
+
+  build-container-to-develop:
+    name: Build Container 🐳
+    
+    needs: coverage
+
+    environment:
+      name: development
+      url: 'https://rancher-finance-stage.99app.com/'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+      #----------------------------------------------
+      #This is the a separate action that sets up buildx runner
+      #----------------------------------------------
+      - name: 🐳 Container | Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      #----------------------------------------------
+      #       load cached if cache exists
+      #----------------------------------------------
+      - name: ⚡️ Cache | Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      #----------------------------------------------
+      #Log in to Docker Hub
+      #----------------------------------------------
+      - name: 🐳 Container | Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      
+
+      #----------------------------------------------
+      #Build and push
+      #----------------------------------------------
+      - name: 🐳 Container | Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.prepare.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
+          #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
+          #cache-from: type=gha
+          #cache-to: type=gha,mode=max
+          
+      
+      #----------------------------------------------
+      #Clear old cache
+      #----------------------------------------------
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: 🐳 Container | Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
