@@ -26,7 +26,7 @@ jobs:
       #----------------------------------------------
       # Prepare 
       #----------------------------------------------
-      - name: ℹ️  Container | Prepare Version
+      - name: ℹ️  Prepare | Version
         id: prepare
         run: |
           echo "GITHUB_REF: $GITHUB_REF"
@@ -38,7 +38,7 @@ jobs:
 
           if [[ $GITHUB_REF == refs/heads/release/* ]]; then
             VERSION="${GITHUB_REF#refs/heads/release/v}-$VERSION"
-            echo "refs/heads/release: $VERSION"
+            echo "(if) refs/heads/release: $VERSION"
 
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
@@ -59,6 +59,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ env.python-version }}
+
 
       #----------------------------------------------
       #       load cached venv if cache exists
@@ -91,6 +92,7 @@ jobs:
           installer-parallel: true
           virtualenvs-path: ~/.cache/pypoetry
 
+
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
@@ -101,7 +103,6 @@ jobs:
           poetry install 
 
       
-
       #----------------------------------------------
       # Run Linting
       #----------------------------------------------
@@ -112,6 +113,7 @@ jobs:
           pip install pre-commit
           pre-commit install -f --install-hooks
           pre-commit run --all-files
+
 
       #----------------------------------------------
       # Export requirements from poetry
