@@ -1,10 +1,7 @@
 name: ci-release
 
 on:
-  pull_request:
-    branches:
-    - 'main'
-
+  
   push:
     branches:
     - 'release/**'
@@ -143,8 +140,6 @@ jobs:
     
     needs: build-to-release
 
-    if: github.event_name == 'pull_request'
-
     environment:
       name: release
     
@@ -251,8 +246,6 @@ jobs:
     name: Build Container 🐳
     
     needs: coverage
-
-    if: github.event_name == 'pull_request'
 
     environment:
       name: release
