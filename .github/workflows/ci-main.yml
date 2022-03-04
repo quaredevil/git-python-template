@@ -48,7 +48,7 @@ jobs:
           fi
 
           echo ::set-output name=tags::${TAGS}
-          echo "Tags: $TAGS"
+          echo "Tags: $TAGS" 
 
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
