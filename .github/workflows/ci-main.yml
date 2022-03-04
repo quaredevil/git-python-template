@@ -1,4 +1,4 @@
-name: ci-main-production
+name: ci-main
 
 on:
   push:
