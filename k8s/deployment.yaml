@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-container-name
+  namespace: test-cd
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-test-cd-test-container-name
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        node.finance.99app.com/application: test-container-name
+        workload.user.cattle.io/workloadselector: apps.deployment-test-cd-test-container-name
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node.finance.99app.com/purpose
+                operator: In
+                values:
+                - application
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: node.finance.99app.com/application
+                operator: In
+                values:
+                - test-container-name
+            topologyKey: kubernetes.io/hostname
+      containers:
+        - image: container-to-change-cd
+          imagePullPolicy: Always
+          name: test-container-name
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+              _serviceType: ClusterIP
+            - containerPort: 443
+              name: https
+              protocol: TCP
+              _serviceType: ClusterIP
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          _active: true
+          resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

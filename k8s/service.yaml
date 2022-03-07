@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-container-name
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["test-cd/test-container-name"]'
+    management.cattle.io/ui-managed: 'true'
+  labels:
+    {}
+  namespace: test-cd
+  ownerReferences:
+    - apiVersion: apps/v1
+      controller: true
+      kind: Deployment
+      name: test-container-name
+spec:
+  selector:
+    workload.user.cattle.io/workloadselector: apps.deployment-test-cd-test-container-name
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+  sessionAffinity: None
+  type: ClusterIP
