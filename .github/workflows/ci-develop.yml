@@ -326,7 +326,7 @@ jobs:
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
-      - name: Setup Kustomize
+      - name: ☸️ K8S | Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: ${{ secrets.KUSTOMIZE_VERSION }}
@@ -334,7 +334,7 @@ jobs:
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
-      - name: 'Update manifests (kustomize)'
+      - name: ☸️ K8S | Update manifests (kustomize)
         env:
           DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_IMAGE }}
 
@@ -346,7 +346,7 @@ jobs:
       #----------------------------------------------
       # Commit code 
       #----------------------------------------------
-      - name: 'Commit files'
+      - name: 💾 Repository | Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -355,7 +355,7 @@ jobs:
       #----------------------------------------------
       # Push code 
       #----------------------------------------------
-      - name: 'Push changes'
+      - name: 💾 Repository | Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
