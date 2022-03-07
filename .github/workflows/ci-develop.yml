@@ -300,3 +300,56 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
+  deployment-K8S:
+    name: Deployment K8S ☸️
+    
+    needs: build-container-to-develop
+
+    environment:
+      name: development
+      url: 'https://rancher-finance-stage.99app.com/'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+      
+      #----------------------------------------------
+      # Kustomize Build
+      #----------------------------------------------
+      - name: 'Kustomize Build'
+        uses: karancode/kustomize-github-action@master
+        with:
+          kustomize_version: '4.0.5'
+      
+      #----------------------------------------------
+      # Kustomize Build
+      #----------------------------------------------
+      - name: 'Update K8S'
+        run: |
+          cd k8s
+          kustomize edit set image container-to-change-cd=${{ secrets.DOCKERHUB_IMAGE }}:dev-${{ github.sha }}
+          cat kustomization.yaml
+
+      #----------------------------------------------
+      # Commit new pointer 
+      #----------------------------------------------
+      - name: 'Commit'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Deploy Action K8S"
+          
+          git add .
+          git commit -am "change image tag"
+          git push
+
+
+      
+
+  
