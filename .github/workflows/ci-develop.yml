@@ -240,7 +240,7 @@ jobs:
           echo "GITHUB_REF: $GITHUB_REF"
 
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
-          TAGS="${DOCKER_IMAGE}:dev,${DOCKER_IMAGE}:dev-${{ github.sha }}"
+          TAGS="${DOCKER_IMAGE}:dev,${DOCKER_IMAGE}:${{ github.sha }}"
 
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS"
@@ -302,8 +302,8 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
 
-  deployment-K8S:
-    name: Deployment K8S ☸️
+  deployment-manifests:
+    name: Deployment manifests ☸️
     
     needs: build-container-to-develop
 
@@ -319,36 +319,47 @@ jobs:
       #----------------------------------------------
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
-      
-      #----------------------------------------------
-      # Kustomize Build
-      #----------------------------------------------
-      - name: 'Kustomize Build'
-        uses: karancode/kustomize-github-action@master
         with:
-          kustomize_version: '4.0.5'
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
-      - name: 'Update K8S'
+      - name: ☸️ K8S | Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: ${{ secrets.KUSTOMIZE_VERSION }}
+
+      #----------------------------------------------
+      # Kustomize Build
+      #----------------------------------------------
+      - name: ☸️ K8S | Update manifests (kustomize)
+        env:
+          DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_IMAGE }}
+
         run: |
-          cd k8s
-          kustomize edit set image container-to-change-cd=${{ secrets.DOCKERHUB_IMAGE }}:dev-${{ github.sha }}
+          cd k8s/overlays/development
+          kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
           cat kustomization.yaml
 
       #----------------------------------------------
-      # Commit new pointer 
+      # Commit code 
       #----------------------------------------------
-      - name: 'Commit'
+      - name: 💾 Repository | Commit files
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "Deploy Action K8S"
-          
-          git add .
-          git commit -am "change image tag"
-          git push
-
+          git config --local user.name "GitHub Action"
+          git commit -am "auto: Change image tag (manifests k8s)"
+      
+      #----------------------------------------------
+      # Push code 
+      #----------------------------------------------
+      - name: 💾 Repository | Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
       
 
