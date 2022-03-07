@@ -339,7 +339,7 @@ jobs:
           DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_IMAGE }}
 
         run: |
-          cd k8s
+          cd k8s/overlays/development
           kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
           cat kustomization.yaml
 
