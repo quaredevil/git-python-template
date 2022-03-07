@@ -44,7 +44,7 @@ jobs:
 
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
-
+          
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS" 
 
