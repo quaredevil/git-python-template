@@ -16,7 +16,8 @@ jobs:
     environment:
       name: development
     
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -118,7 +119,8 @@ jobs:
     environment:
       name: development
     
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -222,7 +224,8 @@ jobs:
       name: development
       url: 'https://rancher-finance-stage.99app.com/'
 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -311,7 +314,8 @@ jobs:
       name: development
       url: 'https://rancher-finance-stage.99app.com/'
 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
