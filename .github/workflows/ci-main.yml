@@ -155,6 +155,20 @@ jobs:
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       
       #----------------------------------------------
+      # Prepare 
+      #----------------------------------------------
+      - name: ℹ️  Prepare | Version
+        id: prepare_k8s
+        run: |
+          DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+
+          echo ::set-output name=tags::${TAGS}
+          echo "Tags: $TAGS" 
+          
+      #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
       - name: ☸️ K8S | Setup Kustomize
@@ -167,11 +181,11 @@ jobs:
       #----------------------------------------------
       - name: ☸️ K8S | Update manifests (kustomize)
         env:
-          DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_IMAGE }}
+          DOCKERHUB_TAGS: ${{ steps.prepare_k8s.outputs.tags }}
 
         run: |
           cd .k8s/overlays/production
-          kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
+          kustomize edit set image container-to-change-cd=$DOCKERHUB_TAGS
           cat kustomization.yaml
 
 
