@@ -339,7 +339,7 @@ jobs:
           DOCKERHUB_IMAGE: ${{ secrets.DOCKERHUB_IMAGE }}
 
         run: |
-          cd k8s/overlays/development
+          cd .k8s/overlays/development
           kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
           cat kustomization.yaml
 
@@ -350,7 +350,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "auto: Change image tag (manifests k8s)"
+          git commit -am "🤖 change image tag (manifests k8s)"
       
       #----------------------------------------------
       # Push code 
