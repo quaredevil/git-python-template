@@ -350,7 +350,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "🤖 | change image tag (manifests k8s)"
+          git commit -am "🤖 change image tag (manifests k8s)"
       
       #----------------------------------------------
       # Push code 
