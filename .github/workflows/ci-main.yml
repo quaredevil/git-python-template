@@ -181,11 +181,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-<<<<<<< HEAD
-          git commit -am "auto: Change image tag (manifests k8s)"
-=======
           git commit -am "🤖 change image tag (manifests k8s)"
->>>>>>> release/1.0.23
       
       #----------------------------------------------
       # Push code 
@@ -194,8 +190,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-<<<<<<< HEAD
-          branch: ${{ github.ref }}
-=======
           #branch: ${{ github.ref }}
->>>>>>> release/1.0.23
