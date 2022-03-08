@@ -343,6 +343,7 @@ jobs:
           kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
           cat kustomization.yaml
 
+
       #----------------------------------------------
       # Commit code 
       #----------------------------------------------
@@ -352,6 +353,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
       
+
       #----------------------------------------------
       # Push code 
       #----------------------------------------------
