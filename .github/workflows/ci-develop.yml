@@ -39,7 +39,7 @@ jobs:
       #----------------------------------------------
       - name: ⚙️ Build  | Load cached venv
         id: cached-poetry-dependencies
-        if: "!contains(github.event.head_commit.message, '/nocache')"
+        #if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
         with:
           path: |
@@ -58,7 +58,7 @@ jobs:
       #  -----  install & configure poetry  -----
       #----------------------------------------------
       - name: ⚙️ Build  | Install Poetry
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
@@ -71,7 +71,7 @@ jobs:
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: ⚙️ Build  | Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           poetry install 
