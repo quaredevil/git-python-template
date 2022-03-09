@@ -7,28 +7,30 @@
 
 .. Shields (https://shields.io/)
 
-|python| |license| |versions| |test-status| |docs| |metacov| |pre-commit|
+|versions| |test-status| |metacov| |pre-commit| |docs| |license|
 
+.. |metacov| image:: https://img.shields.io/badge/coverage-%3E60%25-green
+    :alt: Coverage reports
 
-.. |python| image:: https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white
-    :target: https://www.python.org
-    :alt: Python
-
-.. |license| image:: https://img.shields.io/github/license/99Taxis/systems-engineering-git-python-template.svg
-    :target: https://github.com/99Taxis/systems-engineering-git-python-template/blob/master/LICENSE
+.. |license| image:: https://img.shields.io/github/license/quaredevil/git-python-template
+    :target: https://github.com/quaredevil/git-python-template.svg/blob/master/LICENSE
     :alt: License
 
-.. |test-status| image:: https://github.com/nedbat/coveragepy/actions/workflows/testsuite.yml/badge.svg?branch=master&event=push
-    :target: https://github.com/nedbat/coveragepy/actions/workflows/testsuite.yml
+
+.. |test-status| image:: https://github.com/quaredevil/git-python-template/actions/workflows/ci-main.yml/badge.svg?branch=main&event=push
+    :target: https://github.com/quaredevil/git-python-template/actions/workflows/ci-main.yml
     :alt: Test suite status
 
-.. |versions| image:: https://img.shields.io/pypi/pyversions/coverage.svg?logo=python&logoColor=FBE072
-    :target: https://pypi.org/project/coverage/
-    :alt: Python versions supported
+.. |versions| image:: https://img.shields.io/badge/%F0%9F%90%8D%20python-3.8-green
+    :alt: Python versions
 
 .. |docs| image:: https://readthedocs.org/projects/coverage/badge/?version=latest&style=flat
     :target: https://coverage.readthedocs.io/
     :alt: Documentation
+
+.. |metacov| image:: https://img.shields.io/badge/coverage-%3E60%25-green
+    :alt: Coverage reports
+
 
 .. |metacov| image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nedbat/8c6980f77988a327348f9b02bbaf67f5/raw/metacov.json
     :target: https://nedbat.github.io/coverage-reports/latest.html
