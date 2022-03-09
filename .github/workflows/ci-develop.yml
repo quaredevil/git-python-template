@@ -251,7 +251,7 @@ jobs:
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
-      - name: Set up Docker Context for Buildx
+      - name: 🐳 Container | Set up Docker Context for Buildx
         id: buildx-context
         run: |
           docker context create builders
