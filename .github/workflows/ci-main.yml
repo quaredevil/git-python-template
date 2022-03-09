@@ -201,10 +201,6 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
 
-<<<<<<< HEAD
-=======
-          git pull && git push && git push --tags 
->>>>>>> feat: workflow actions-multstage-v13
       
       
       #----------------------------------------------
