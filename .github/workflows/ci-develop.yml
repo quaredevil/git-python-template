@@ -274,14 +274,6 @@ jobs:
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
-<<<<<<< HEAD
-=======
-      - name: 🐳 Container | Set up Docker Context for Buildx
-        id: buildx-context
-        run: |
-          docker context create builders
-
->>>>>>> rebase: v5 /nocahce
       - name: 🐳 Container | Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
