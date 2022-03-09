@@ -14,7 +14,8 @@ jobs:
     environment:
       name: production
 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -113,7 +114,8 @@ jobs:
       url: 'https://github.com/quaredevil/git-python-template/releases'
 
 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -142,7 +144,8 @@ jobs:
       name: production
       url: 'https://rancher-finance-stage.99app.com/'
 
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: 99-staging-runners
 
     steps:
       #----------------------------------------------
@@ -198,6 +201,10 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
 
+<<<<<<< HEAD
+=======
+          git pull && git push && git push --tags 
+>>>>>>> feat: workflow actions-multstage-v13
       
       
       #----------------------------------------------
