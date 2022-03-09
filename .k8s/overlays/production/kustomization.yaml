@@ -1,15 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-bases:
-- ../../base
-
-namespace: "test-cd"
-
+namespace: test-cd
 images:
-  - name: container-to-change-cd
-    newName: quaredevil/ci-gitops-test
-    newTag: v9999999
-
+- name: container-to-change-cd
+  newName: quaredevil/ci-gitops-test
+  newTag: 1.0.29
 commonLabels:
-    node.finance.99app.com/environment: production
+  node.finance.99app.com/environment: production
+resources:
+- ../../base
