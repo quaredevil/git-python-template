@@ -273,7 +273,7 @@ jobs:
       - name: ⚡️ Cache | Cache Docker layers
         uses: actions/cache@v2
         with:
-          path: ~/.buildx-cache
+          path: ~/.buildx-cache/container
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           #restore-keys: |
           #  ${{ runner.os }}-buildx-
@@ -298,7 +298,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.prepare.outputs.tags }}
-          cache-from: type=local,src=~/.buildx-cache
+          cache-from: type=local,src=~/.buildx-cache/container
           cache-to: type=local,dest=~/.buildx-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
@@ -314,8 +314,8 @@ jobs:
       # https://github.com/moby/buildkit/issues/1896
       - name: 🐳 Container | Move cache
         run: |
-          rm -rf ~/.buildx-cache
-          mv ~/.buildx-cache-new ~/.buildx-cache
+          rm -rf ~/.buildx-cache/container
+          mv ~/.buildx-cache-new ~/.buildx-cache/container
 
 
   deployment-manifests:
