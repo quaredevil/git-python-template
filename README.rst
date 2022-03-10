@@ -7,19 +7,21 @@
 
 .. Shields (https://shields.io/)
 
-|versions| |test-status| |metacov| |pre-commit| |docs| |license|
+|versions| |test-main| |test-develop| |metacov| |pre-commit| |docs| |license|
+
+
+    [![ci-develop](https://github.com/quaredevil/git-python-template/actions/workflows/ci-develop.yml/badge.svg)](https://github.com/quaredevil/git-python-template/actions/workflows/ci-develop.yml)
 
 .. |metacov| image:: https://img.shields.io/badge/coverage-%3E60%25-green
     :alt: Coverage reports
 
-.. |license| image:: https://img.shields.io/github/license/quaredevil/git-python-template
-    :target: https://github.com/quaredevil/git-python-template.svg/blob/master/LICENSE
-    :alt: License
+.. |test-develop| image:: https://github.com/quaredevil/git-python-template/actions/workflows/ci-develop.yml/badge.svg?branch=develop&event=push
+    :target: https://github.com/quaredevil/git-python-template/actions/workflows/ci-develop.yml
+    :alt: Test develop status
 
-
-.. |test-status| image:: https://github.com/quaredevil/git-python-template/actions/workflows/ci-main.yml/badge.svg?branch=main&event=push
+.. |test-main| image:: https://github.com/quaredevil/git-python-template/actions/workflows/ci-main.yml/badge.svg?branch=main&event=push
     :target: https://github.com/quaredevil/git-python-template/actions/workflows/ci-main.yml
-    :alt: Test suite status
+    :alt: Test main status
 
 .. |versions| image:: https://img.shields.io/badge/%F0%9F%90%8D%20python-3.8-green
     :alt: Python versions
@@ -31,10 +33,9 @@
 .. |metacov| image:: https://img.shields.io/badge/coverage-%3E60%25-green
     :alt: Coverage reports
 
-
-.. |metacov| image:: https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/nedbat/8c6980f77988a327348f9b02bbaf67f5/raw/metacov.json
-    :target: https://nedbat.github.io/coverage-reports/latest.html
-    :alt: Coverage reports
+.. |license| image:: https://img.shields.io/github/license/quaredevil/git-python-template
+    :target: https://github.com/quaredevil/git-python-template.svg/blob/master/LICENSE
+    :alt: License
 
 .. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
    :target: https://github.com/pre-commit/pre-commit
