@@ -100,7 +100,7 @@ jobs:
           poetry export -f requirements.txt --output requirements.txt --without-hashes
       
       - name: ⚙️ Build  | Export requirements from pip
-        if: steps.cached-poetry-dependencies.outputs.cache-hit = 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit == 'true'
         run: |
           python -m pip freeze > requirements.txt
 
