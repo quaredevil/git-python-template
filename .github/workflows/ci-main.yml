@@ -62,17 +62,6 @@ jobs:
           version: latest
           endpoint: builders
 
-      ##----------------------------------------------
-      ##       load cached if cache exists
-      ##----------------------------------------------
-      #- name: ⚡️ Cache | Cache Docker layers
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: ~/.buildx-main-cache
-      #    key: ${{ runner.os }}-buildx-main-${{ github.sha }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-buildx-main-
-
       #----------------------------------------------
       #Log in to Docker Hub
       #----------------------------------------------
@@ -93,8 +82,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.prepare.outputs.tags }}
-          cache-from: type=local,src=~/.buildx-main-cache
-          cache-to: type=local,dest=~/.buildx-main-cache-new,mode=max
+          cache-from: type=local,src=/home/runner/.buildx-main-cache
+          cache-to: type=local,dest=/home/runner/.buildx-main-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
           #cache-from: type=gha
@@ -109,8 +98,8 @@ jobs:
       # https://github.com/moby/buildkit/issues/1896
       - name: 🐳 Container | Move cache
         run: |
-          rm -rf ~/.buildx-main-cache/*
-          mv ~/.buildx-main-cache-new ~/.buildx-main-cache
+          rm -rf /home/runner/.buildx-main-cache/*
+          mv /home/runner/.buildx-main-cache-new /home/runner/.buildx-main-cache
   
   
   github-release:
