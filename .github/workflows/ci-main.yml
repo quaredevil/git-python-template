@@ -14,8 +14,7 @@ jobs:
     environment:
       name: production
 
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -32,36 +31,33 @@ jobs:
         id: prepare
         run: |
           echo "GITHUB_REF: $GITHUB_REF"
-
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
           VERSION=latest
-
           TAGS="${DOCKER_IMAGE}:${VERSION}"
-
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION="${GITHUB_REF#refs/tags/v}"
             echo "(if) refs/tags: $VERSION"
-
             TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           fi
           
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS" 
-
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
-      - name: 🐳 Container | Set up Docker Context for Buildx
-        id: buildx-context
-        run: |
-          docker context create builders
-
       - name: 🐳 Container | Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-          endpoint: builders
 
+      #----------------------------------------------
+      #       load cached if cache exists
+      #----------------------------------------------
+      - name: ⚡️ Cache | Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-main-cache
+          key: ${{ runner.os }}-buildx-main-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-main-
       #----------------------------------------------
       #Log in to Docker Hub
       #----------------------------------------------
@@ -82,8 +78,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.prepare.outputs.tags }}
-          cache-from: type=local,src=/home/runner/.buildx-main-cache
-          cache-to: type=local,dest=/home/runner/.buildx-main-cache-new,mode=max
+          cache-from: type=local,src=/tmp/.buildx-main-cache
+          cache-to: type=local,dest=/tmp/.buildx-main-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
           #cache-from: type=gha
@@ -98,9 +94,8 @@ jobs:
       # https://github.com/moby/buildkit/issues/1896
       - name: 🐳 Container | Move cache
         run: |
-          rm -rf /home/runner/.buildx-main-cache/*
-          mv /home/runner/.buildx-main-cache-new /home/runner/.buildx-main-cache
-  
+          rm -rf /tmp/.buildx-main-cache
+          mv /tmp/.buildx-main-cache-new /tmp/.buildx-main-cache
   
   github-release:
     name: Releases 🔖
@@ -112,8 +107,7 @@ jobs:
       url: 'https://github.com/quaredevil/git-python-template/releases'
 
 
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -142,8 +136,7 @@ jobs:
       name: production
       url: 'https://rancher-finance-stage.99app.com/'
 
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -165,7 +158,6 @@ jobs:
           VERSION="${GITHUB_REF#refs/tags/v}"
           
           TAGS="${DOCKER_IMAGE}:${VERSION}"
-
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS" 
           
@@ -188,8 +180,6 @@ jobs:
           cd .k8s/overlays/production
           kustomize edit set image container-to-change-cd=$DOCKERHUB_TAGS
           cat kustomization.yaml
-
-
       #----------------------------------------------
       # Commit code 
       #----------------------------------------------
@@ -198,7 +188,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
-
+      
       
       #----------------------------------------------
       # Push code 
