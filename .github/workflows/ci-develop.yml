@@ -47,9 +47,6 @@ jobs:
             ~/.local   
           #key: poetry      
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-          #restore-keys: |
-          #    ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
-          #    ${{ runner.os }}-build-
  
 
       - name: Ensure cache is healthy
@@ -147,10 +144,6 @@ jobs:
             ~/.local     
           #key: poetry      
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-          #restore-keys: |
-          #    ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
-          #    ${{ runner.os }}-build-
-          #    ${{ runner.os }}-
 
       #----------------------------------------------
       # Artifact | Download requirements.txt
@@ -183,8 +176,6 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
-          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
           cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
           cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
@@ -273,10 +264,8 @@ jobs:
       - name: ⚡️ Cache | Cache Docker layers
         uses: actions/cache@v2
         with:
-          path: ~/.buildx-cache/container
+          path: ~/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
-          #restore-keys: |
-          #  ${{ runner.os }}-buildx-
 
       #----------------------------------------------
       #Log in to Docker Hub
@@ -298,7 +287,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.prepare.outputs.tags }}
-          cache-from: type=local,src=~/.buildx-cache/container
+          cache-from: type=local,src=~/.buildx-cache
           cache-to: type=local,dest=~/.buildx-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
@@ -314,8 +303,8 @@ jobs:
       # https://github.com/moby/buildkit/issues/1896
       - name: 🐳 Container | Move cache
         run: |
-          rm -rf ~/.buildx-cache/container
-          mv ~/.buildx-cache-new ~/.buildx-cache/container
+          rm -rf ~/.buildx-cache/*
+          mv ~/.buildx-cache-new ~/.buildx-cache
 
 
   deployment-manifests:
