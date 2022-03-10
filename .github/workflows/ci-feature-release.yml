@@ -51,10 +51,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/pypoetry
+            .venv
             ~/.cache
-            ~/.local
-            .venv    
+            ~/.local     
           #key: poetry      
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
