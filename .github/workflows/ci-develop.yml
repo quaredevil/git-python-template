@@ -151,11 +151,11 @@ jobs:
         run: tar -xvf requirements.tar.gz
 
 
-      - name: 📄 Artifact | Delete requirements
-        uses: geekyeggo/delete-artifact@v1
-        with:
-          name: requirements.tar.gz
-          failOnError: false
+      #- name: 📄 Artifact | Delete requirements
+      #  uses: geekyeggo/delete-artifact@v1
+      #  with:
+      #    name: requirements.tar.gz
+      #    failOnError: false
 
       #----------------------------------------------
       #Run coverage tests
@@ -184,10 +184,8 @@ jobs:
         run: |
           tee -a coverage.txt <<EOF
           =======================================================
-
           [Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}
           [Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}
-
           =======================================================
           ${{ steps.pytester-cov.outputs.output-table }}
           =======================================================
@@ -284,8 +282,8 @@ jobs:
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          #restore-keys: |
+          #  ${{ runner.os }}-buildx-
 
 
       #----------------------------------------------
