@@ -62,16 +62,16 @@ jobs:
           version: latest
           endpoint: builders
 
-      #----------------------------------------------
-      #       load cached if cache exists
-      #----------------------------------------------
-      - name: ⚡️ Cache | Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: ~/.buildx-main-cache
-          key: ${{ runner.os }}-buildx-main-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-main-
+      ##----------------------------------------------
+      ##       load cached if cache exists
+      ##----------------------------------------------
+      #- name: ⚡️ Cache | Cache Docker layers
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: ~/.buildx-main-cache
+      #    key: ${{ runner.os }}-buildx-main-${{ github.sha }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-buildx-main-
 
       #----------------------------------------------
       #Log in to Docker Hub

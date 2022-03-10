@@ -33,20 +33,20 @@ jobs:
         with:
           python-version: ${{ env.python-version }}
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: ⚙️ Build  | Load cached venv
-        id: cached-poetry-dependencies
-        if: "!contains(github.event.head_commit.message, '/nocache')"
-        uses: actions/cache@v2
-        with:
-          path: |
-            .venv
-            ~/.cache
-            ~/.local   
-          #key: poetry      
-          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      ##----------------------------------------------
+      ##       load cached venv if cache exists
+      ##----------------------------------------------
+      #- name: ⚙️ Build  | Load cached venv
+      #  id: cached-poetry-dependencies
+      #  if: "!contains(github.event.head_commit.message, '/nocache')"
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: |
+      #      .venv
+      #      ~/.cache
+      #      ~/.local   
+      #    #key: poetry      
+      #    key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
  
 
       - name: Ensure cache is healthy
@@ -131,19 +131,19 @@ jobs:
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-      - name: ⚙️ Build  | Load cached venv
-        id: cached-poetry-dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            .venv
-            ~/.cache
-            ~/.local     
-          #key: poetry      
-          key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      ##----------------------------------------------
+      ##       load cached venv if cache exists
+      ##----------------------------------------------
+      #- name: ⚙️ Build  | Load cached venv
+      #  id: cached-poetry-dependencies
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: |
+      #      .venv
+      #      ~/.cache
+      #      ~/.local     
+      #    #key: poetry      
+      #    key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
       #----------------------------------------------
       # Artifact | Download requirements.txt
@@ -258,14 +258,14 @@ jobs:
           version: latest
           endpoint: builders
  
-      #----------------------------------------------
-      #       load cached if cache exists
-      #----------------------------------------------
-      - name: ⚡️ Cache | Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: ~/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+      ##----------------------------------------------
+      ##       load cached if cache exists
+      ##----------------------------------------------
+      #- name: ⚡️ Cache | Cache Docker layers
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: ~/.buildx-cache
+      #    key: ${{ runner.os }}-buildx-${{ github.sha }}
 
       #----------------------------------------------
       #Log in to Docker Hub
