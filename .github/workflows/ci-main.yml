@@ -186,6 +186,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+          tags: true
 
  
   github-release:
@@ -217,4 +218,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
-          artifactErrorsFailBuild: true
+          tag: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          body: |
+            ## Changes in this Release
+
+            History from `${{ steps.attrs.outputs.tail }}` to `${{ steps.attrs.outputs.head }}`
+
+            ### Commits
+
+            ${{ steps.attrs.outputs.commits }}
+
+            ### Pull Requests
+
+            ${{ steps.attrs.outputs.prs }}
+
+            ### Contributors
+
+            ${{ steps.attrs.outputs.contributors }}
+
+            ### Files
+            ```
+            ${{ steps.attrs.outputs.files }}
+            ```
