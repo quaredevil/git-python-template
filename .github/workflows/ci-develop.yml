@@ -379,7 +379,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
           git status
-          git merge develop
+          git merge origin/develop
           git push
           git push --tags
           
