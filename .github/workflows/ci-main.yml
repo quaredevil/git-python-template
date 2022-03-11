@@ -1,4 +1,4 @@
-name: ci-main
+name: Main Release
 
 on:
   push:
@@ -134,6 +134,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+
+
   
 
   deployment-manifests:
