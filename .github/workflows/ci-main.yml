@@ -1,4 +1,4 @@
-name: Main Release
+name: "Main Release"
 
 on:
   push:
@@ -188,7 +188,8 @@ jobs:
           branch: ${{ github.ref }}
           force: true
 
- 
+
+
   github-release:
     name: Releases 🔖
 
