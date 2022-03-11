@@ -66,6 +66,8 @@ jobs:
           key: ${{ runner.os }}-buildx-main-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-main-
+
+
       #----------------------------------------------
       #Log in to Docker Hub
       #----------------------------------------------
@@ -177,7 +179,8 @@ jobs:
       - name: 💾 Repository | Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          #github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
           #branch: ${{ github.ref }}
 
 
