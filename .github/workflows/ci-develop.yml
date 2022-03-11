@@ -379,7 +379,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
           git status
-          git merge origin/develop
+          git merge ${{ github.ref }}
           git push
           git push --tags
           

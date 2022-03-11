@@ -113,6 +113,8 @@ jobs:
   deployment-manifests:
     name: Deployment manifests ☸️
     
+    needs: build-container-to-main
+    
     environment:
       name: production
       url: 'https://rancher-finance-stage.99app.com/'
@@ -173,11 +175,11 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git add .
           git commit -am "🤖 change image tag (manifests k8s)"
           git status
-          git merge origin/main
+          git merge ${{ github.ref }}
           git push
-          git push --tags
       
       ##----------------------------------------------
       ## Push code 
