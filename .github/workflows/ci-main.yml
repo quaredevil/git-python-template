@@ -58,7 +58,6 @@ jobs:
           version: latest
           endpoint: builders
 
-
       #----------------------------------------------
       #       load cached if cache exists
       #----------------------------------------------
@@ -110,46 +109,10 @@ jobs:
           rm -rf /tmp/.buildx-main-cache
           mv /tmp/.buildx-main-cache-new /tmp/.buildx-main-cache
   
-  
-  github-release:
-    name: Releases 🔖
-
-    needs: build-container-to-main
-
-    environment:
-      name: production
-      url: 'https://github.com/quaredevil/git-python-template/releases'
-
-
-    runs-on: ubuntu-latest
-
-    steps:
-      #----------------------------------------------
-      #       check-out repo and set-up python
-      #----------------------------------------------
-      - name: 💾 Repository | Check out
-        uses: actions/checkout@v2
-
-
-      #----------------------------------------------
-      # Releases 
-      #----------------------------------------------
-      - name: 🔖 Release | Publish Release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generateReleaseNotes: true
-          allowUpdates: true
-          artifactErrorsFailBuild: true
-
-
-  
 
   deployment-manifests:
     name: Deployment manifests ☸️
     
-    needs: github-release
-
     environment:
       name: production
       url: 'https://rancher-finance-stage.99app.com/'
@@ -218,5 +181,38 @@ jobs:
       - name: 💾 Repository | Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          #github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.WORKFLOW_TOKEN }}
           #branch: ${{ github.ref }}
+
+
+  github-release:
+    name: Releases 🔖
+
+    needs: deployment-manifests
+
+    environment:
+      name: production
+      url: 'https://github.com/quaredevil/git-python-template/releases'
+
+
+    runs-on: ubuntu-latest
+
+    steps:
+      #----------------------------------------------
+      #       check-out repo and set-up python
+      #----------------------------------------------
+      - name: 💾 Repository | Check out
+        uses: actions/checkout@v2
+
+
+      #----------------------------------------------
+      # Releases 
+      #----------------------------------------------
+      - name: 🔖 Release | Publish Release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
+          allowUpdates: true
+          artifactErrorsFailBuild: true
