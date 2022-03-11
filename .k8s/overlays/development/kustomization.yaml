@@ -4,7 +4,7 @@ namespace: test-cd
 images:
 - name: container-to-change-cd
   newName: quaredevil/ci-gitops-test
-  newTag: e57b327240d60e50b2cccb4cdc5b893971a95846
+  newTag: 1ddf3e14ff5383a9cc5633b320283eac80ddf97e
 commonLabels:
   node.finance.99app.com/environment: development
 resources:
