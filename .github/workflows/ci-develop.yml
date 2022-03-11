@@ -16,8 +16,7 @@ jobs:
     environment:
       name: development
     
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -39,7 +38,7 @@ jobs:
       #----------------------------------------------
       - name: ⚙️ Build  | Load cached venv
         id: cached-poetry-dependencies
-        #if: "!contains(github.event.head_commit.message, '/nocache')"
+        if: "!contains(github.event.head_commit.message, '/nocache')"
         uses: actions/cache@v2
         with:
           path: |
@@ -51,31 +50,28 @@ jobs:
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
-              ${{ runner.os }}-build-
- 
- 
+
+              
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
       - name: ⚙️ Build  | Install Poetry
-        #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-          virtualenvs-path: ~/.cache/pypoetry
 
 
       #----------------------------------------------
       # install dependencies if cache does not exist
       #----------------------------------------------
       - name: ⚙️ Build  | Install dependencies
-        #if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           poetry install 
-
       
       #----------------------------------------------
       # Run Linting
@@ -93,21 +89,18 @@ jobs:
       # Export requirements from poetry
       #----------------------------------------------
       - name: ⚙️ Build  | Export requirements from poetry
-        #if: github.event_name == 'pull_request'
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
-
  
+
       #----------------------------------------------
       # Artifact | Upload requirements.txt
       #----------------------------------------------
       - name: 📄 Artifact | Tar files
-        #if: github.event_name == 'pull_request'
         run: tar -czvf requirements.tar.gz requirements.txt
 
       - name: 📄 Artifact | Upload requirements
         uses: actions/upload-artifact@v2
-        #if: github.event_name == 'pull_request'
         with:
           name: requirements.tar.gz
           path: requirements.tar.gz
@@ -120,8 +113,7 @@ jobs:
     environment:
       name: development
     
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -146,8 +138,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
 
       #----------------------------------------------
       # Artifact | Download requirements.txt
@@ -180,8 +170,6 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
-          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
           cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
           cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
@@ -189,7 +177,40 @@ jobs:
         run: echo $FOR_ECHO
         env:
           FOR_ECHO: ${{ steps.pytester-cov.outputs.output-table }}
-        
+      
+
+      #----------------------------------------------
+      # Artifact | Upload Coverage
+      #----------------------------------------------
+      - name: 📄 Artifact | 🔍 Coverage | Create file
+        run: |
+          tee -a coverage.txt <<EOF
+          =======================================================
+
+          [Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}
+          [Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}
+
+          =======================================================
+          ${{ steps.pytester-cov.outputs.output-table }}
+          =======================================================
+          EOF
+
+        #echo "=======================================================" >> coverage.txt
+        #echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}" >> coverage.txt
+        #echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}" >> coverage.txt
+        #echo "=======================================================" >> coverage.txt
+        #echo "${{ steps.pytester-cov.outputs.output-table }}" >> coverage.txt
+        #echo "=======================================================" >> coverage.txt
+
+      - name: 📄 Artifact | 🔍 Coverage | Tar files
+        run: tar -czvf coverage.tar.gz coverage.txt
+
+      - name: 📄 Artifact | 🔍 Coverage | Upload coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage.tar.gz
+          path: coverage.tar.gz
+
       #----------------------------------------------
       #Coverage | Check single file
       #----------------------------------------------
@@ -216,8 +237,8 @@ jobs:
         with:
           body: ${{ steps.pytester-cov.outputs.output-table }}
 
-
   build-container-to-develop:
+
     name: Build Container 🐳
     
     needs: coverage
@@ -226,8 +247,7 @@ jobs:
       name: development
       url: 'https://rancher-finance-stage.99app.com/'
 
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -236,6 +256,7 @@ jobs:
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
 
+
       #----------------------------------------------
       # Prepare 
       #----------------------------------------------
@@ -243,27 +264,19 @@ jobs:
         id: prepare
         run: |
           echo "GITHUB_REF: $GITHUB_REF"
-
           DOCKER_IMAGE=${{ secrets.DOCKERHUB_IMAGE }}
           TAGS="${DOCKER_IMAGE}:dev,${DOCKER_IMAGE}:${{ github.sha }}"
-
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS"
           
+
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
-      - name: 🐳 Container | Set up Docker Context for Buildx
-        id: buildx-context
-        run: |
-          docker context create builders
-
       - name: 🐳 Container | Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-        with:
-          version: latest
-          endpoint: builders
- 
+
+
       #----------------------------------------------
       #       load cached if cache exists
       #----------------------------------------------
@@ -274,6 +287,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
 
       #----------------------------------------------
       #Log in to Docker Hub
@@ -324,8 +338,7 @@ jobs:
       name: development
       url: 'https://rancher-finance-stage.99app.com/'
 
-    #runs-on: ubuntu-latest
-    runs-on: 99-staging-runners
+    runs-on: ubuntu-latest
 
     steps:
       #----------------------------------------------
@@ -336,8 +349,8 @@ jobs:
         with:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
-
       
+
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
@@ -345,6 +358,7 @@ jobs:
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: ${{ secrets.KUSTOMIZE_VERSION }}
+
 
       #----------------------------------------------
       # Kustomize Build
@@ -378,6 +392,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
 
-      
 
-  
