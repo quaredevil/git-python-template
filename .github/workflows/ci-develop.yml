@@ -378,16 +378,19 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -am "🤖 change image tag (manifests k8s)"
-      
-
-      #----------------------------------------------
-      # Push code 
-      #----------------------------------------------
-      - name: 💾 Repository | Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          #github_token: ${{ secrets.GITHUB_TOKEN }}
-          github_token: ${{ secrets.WORKFLOW_TOKEN }}
-          branch: ${{ github.ref }}
+          git status
+          git merge develop
+          git push
+          git push --tags
+          
+      ##----------------------------------------------
+      ## Push code 
+      ##----------------------------------------------
+      #- name: 💾 Repository | Push changes
+      #  uses: ad-m/github-push-action@master
+      #  with:
+      #    github_token: ${{ secrets.GITHUB_TOKEN }}
+      #    #github_token: ${{ secrets.WORKFLOW_TOKEN }}
+      #    branch: ${{ github.ref }}
 
 
