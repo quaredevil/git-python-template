@@ -50,7 +50,8 @@ jobs:
           key: ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
-              ${{ runner.os }}-build-
+
+              
       #----------------------------------------------
       #  -----  install & configure poetry  -----
       #----------------------------------------------
@@ -61,7 +62,6 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
-          virtualenvs-path: ~/.cache/pypoetry
 
 
       #----------------------------------------------
@@ -83,24 +83,24 @@ jobs:
           pip install pre-commit
           pre-commit install -f --install-hooks
           pre-commit run --all-files
+
+
       #----------------------------------------------
       # Export requirements from poetry
       #----------------------------------------------
       - name: ⚙️ Build  | Export requirements from poetry
-        #if: github.event_name == 'pull_request'
         run: |
           poetry export -f requirements.txt --output requirements.txt --without-hashes
  
+
       #----------------------------------------------
       # Artifact | Upload requirements.txt
       #----------------------------------------------
       - name: 📄 Artifact | Tar files
-        #if: github.event_name == 'pull_request'
         run: tar -czvf requirements.tar.gz requirements.txt
 
       - name: 📄 Artifact | Upload requirements
         uses: actions/upload-artifact@v2
-        #if: github.event_name == 'pull_request'
         with:
           name: requirements.tar.gz
           path: requirements.tar.gz
@@ -140,6 +140,7 @@ jobs:
               ${{ runner.os }}-build-${{ steps.setup-python.outputs.python-version }}-
               ${{ runner.os }}-build-
               ${{ runner.os }}-
+
       #----------------------------------------------
       # Artifact | Download requirements.txt
       #----------------------------------------------
@@ -171,8 +172,6 @@ jobs:
         with:
           pytest-root-dir: '.'
           cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
-          #cov-threshold-single: ${{ env.COVERAGE_SINGLE }}
-          #cov-threshold-total: ${{ env.COVERAGE_TOTAL }}
           cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
           cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 
@@ -180,7 +179,40 @@ jobs:
         run: echo $FOR_ECHO
         env:
           FOR_ECHO: ${{ steps.pytester-cov.outputs.output-table }}
-        
+      
+
+      #----------------------------------------------
+      # Artifact | Upload Coverage
+      #----------------------------------------------
+      - name: 📄 Artifact | 🔍 Coverage | Create file
+        run: |
+          tee -a coverage.txt <<EOF
+          =======================================================
+
+          [Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}
+          [Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}
+
+          =======================================================
+          ${{ steps.pytester-cov.outputs.output-table }}
+          =======================================================
+          EOF
+
+        #echo "=======================================================" >> coverage.txt
+        #echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}" >> coverage.txt
+        #echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}" >> coverage.txt
+        #echo "=======================================================" >> coverage.txt
+        #echo "${{ steps.pytester-cov.outputs.output-table }}" >> coverage.txt
+        #echo "=======================================================" >> coverage.txt
+
+      - name: 📄 Artifact | 🔍 Coverage | Tar files
+        run: tar -czvf coverage.tar.gz coverage.txt
+
+      - name: 📄 Artifact | 🔍 Coverage | Upload coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage.tar.gz
+          path: coverage.tar.gz
+
       #----------------------------------------------
       #Coverage | Check single file
       #----------------------------------------------
@@ -189,6 +221,7 @@ jobs:
         run: |
           echo "[Coverage] | single fail | ${{ steps.pytester-cov.outputs.cov-threshold-single-fail }}"
           exit 1
+
       #----------------------------------------------
       #Coverage | Check total file
       #----------------------------------------------
@@ -197,6 +230,7 @@ jobs:
         run: |
           echo "[Coverage] | total fail | ${{ steps.pytester-cov.outputs.cov-threshold-total-fail }}"
           exit 1
+
       #----------------------------------------------
       #Coverage | commit table generated
       #----------------------------------------------
@@ -206,6 +240,7 @@ jobs:
           body: ${{ steps.pytester-cov.outputs.output-table }}
 
   build-container-to-develop:
+
     name: Build Container 🐳
     
     needs: coverage
@@ -223,6 +258,7 @@ jobs:
       - name: 💾 Repository | Check out
         uses: actions/checkout@v2
 
+
       #----------------------------------------------
       # Prepare 
       #----------------------------------------------
@@ -235,11 +271,13 @@ jobs:
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS"
           
+
       #----------------------------------------------
       #This is the a separate action that sets up buildx runner
       #----------------------------------------------
       - name: 🐳 Container | Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
 
       #----------------------------------------------
       #       load cached if cache exists
@@ -251,6 +289,8 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
+
+
       #----------------------------------------------
       #Log in to Docker Hub
       #----------------------------------------------
@@ -289,6 +329,8 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+
   deployment-manifests:
     name: Deployment manifests ☸️
     
@@ -310,6 +352,7 @@ jobs:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       
+
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
@@ -317,6 +360,7 @@ jobs:
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: ${{ secrets.KUSTOMIZE_VERSION }}
+
 
       #----------------------------------------------
       # Kustomize Build
@@ -329,6 +373,8 @@ jobs:
           cd .k8s/overlays/development
           kustomize edit set image container-to-change-cd=$DOCKERHUB_IMAGE:${{ github.sha }}
           cat kustomization.yaml
+
+
       #----------------------------------------------
       # Commit code 
       #----------------------------------------------

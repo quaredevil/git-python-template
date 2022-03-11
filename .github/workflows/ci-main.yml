@@ -148,6 +148,7 @@ jobs:
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
           fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       
+      
       #----------------------------------------------
       # Prepare 
       #----------------------------------------------
@@ -161,6 +162,7 @@ jobs:
           echo ::set-output name=tags::${TAGS}
           echo "Tags: $TAGS" 
           
+
       #----------------------------------------------
       # Kustomize Build
       #----------------------------------------------
@@ -168,6 +170,7 @@ jobs:
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: ${{ secrets.KUSTOMIZE_VERSION }}
+
 
       #----------------------------------------------
       # Kustomize Build
@@ -180,6 +183,8 @@ jobs:
           cd .k8s/overlays/production
           kustomize edit set image container-to-change-cd=$DOCKERHUB_TAGS
           cat kustomization.yaml
+
+
       #----------------------------------------------
       # Commit code 
       #----------------------------------------------
