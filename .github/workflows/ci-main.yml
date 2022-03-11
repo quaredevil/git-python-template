@@ -90,24 +90,24 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.prepare.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-main-cache
-          cache-to: type=local,dest=/tmp/.buildx-main-cache-new,mode=max
+          #cache-from: type=local,src=/tmp/.buildx-main-cache
+          #cache-to: type=local,dest=/tmp/.buildx-main-cache-new,mode=max
           #cache-from: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache
           #cache-to: type=registry,ref=${{ secrets.DOCKERHUB_IMAGE }}:buildcache,mode=max
-          #cache-from: type=gha
-          #cache-to: type=gha,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           
       
-      #----------------------------------------------
-      #Clear old cache
-      #----------------------------------------------
-      # Temp fix
-      # https://github.com/docker/build-push-action/issues/252
-      # https://github.com/moby/buildkit/issues/1896
-      - name: 🐳 Container | Move cache
-        run: |
-          rm -rf /tmp/.buildx-main-cache
-          mv /tmp/.buildx-main-cache-new /tmp/.buildx-main-cache
+      ##----------------------------------------------
+      ##Clear old cache
+      ##----------------------------------------------
+      ## Temp fix
+      ## https://github.com/docker/build-push-action/issues/252
+      ## https://github.com/moby/buildkit/issues/1896
+      #- name: 🐳 Container | Move cache
+      #  run: |
+      #    rm -rf /tmp/.buildx-main-cache
+      #    mv /tmp/.buildx-main-cache-new /tmp/.buildx-main-cache
   
 
   deployment-manifests:
@@ -185,8 +185,9 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          #branch: ${{ github.ref }}
           force: true
+          
 
 
 
