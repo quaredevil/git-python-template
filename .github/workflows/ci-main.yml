@@ -178,8 +178,7 @@ jobs:
           git add .
           git commit -am "🤖 change image tag (manifests k8s)"
           git status
-          git merge ${{ github.ref }}
-          git push
+          git push origin HEAD:${{ github.ref }}
       
       ##----------------------------------------------
       ## Push code 
