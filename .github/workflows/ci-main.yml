@@ -231,8 +231,8 @@ jobs:
           name: ${{ steps.create_tag.outputs.version }}
           tag: ${{ steps.create_tag.outputs.version }}
           body: |
-            ${{ steps.changelog.outputs.compareurl }}
+            ### Commits
 
             ${{ steps.changelog.outputs.changelog }}
-            
-            Document Website: https://raw.githack.com/quaredevil/git-python-template/${{ steps.changelog.outputs.gh-pages-short-hash }}/index.html
+
+            Full Changelog: ${{ steps.changelog.outputs.compareurl }}
