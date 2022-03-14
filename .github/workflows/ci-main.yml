@@ -214,36 +214,25 @@ jobs:
       #----------------------------------------------
       # Releases 
       #----------------------------------------------
-      - name: 🔖 Release | Extract Repo Attributes
-        id: attrs
-        uses: ibnesayeed/repo-attrs@master
-        
+      - name: 🔖 Release | Generate changelog
+        id: changelog
+        uses: jaywcjlove/changelog-generator@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filter-author: (jaywcjlove|小弟调调™|dependabot|renovate\\[bot\\]|dependabot\\[bot\\]|Renovate Bot)
+          filter: '[R|r]elease[d]\s+[v|V]\d(\.\d+){0,2}'
+
       - name: 🔖 Release | Publish Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           allowUpdates: true
-          tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          name: ${{ steps.create_tag.outputs.version }}
+          tag: ${{ steps.create_tag.outputs.version }}
           body: |
-            ## Changes in this Release
+            ${{ steps.changelog.outputs.compareurl }}
 
-            History from `${{ steps.attrs.outputs.tail }}` to `${{ steps.attrs.outputs.head }}`
-
-            ### Commits
-
-            ${{ steps.attrs.outputs.commits }}
-
-            ### Pull Requests
-
-            ${{ steps.attrs.outputs.prs }}
-
-            ### Contributors
-
-            ${{ steps.attrs.outputs.contributors }}
-
-            ### Files
-            ```
-            ${{ steps.attrs.outputs.files }}
-            ```
+            ${{ steps.changelog.outputs.changelog }}
+            
+            Document Website: https://raw.githack.com/quaredevil/git-python-template/${{ steps.changelog.outputs.gh-pages-short-hash }}/index.html
