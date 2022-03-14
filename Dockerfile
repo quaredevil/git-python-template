@@ -64,7 +64,7 @@ COPY --from=builder /app .
 #COPY docker-entrypoint.sh ./
 
 
-RUN . /venv/bin/activate && python3 simplecalc/cli.py sum 1 1
+RUN . /venv/bin/activate && python3 app/cli.py sum 1 1
 CMD ["sh", "-c", "tail -f /dev/null"]
 #CMD ["./docker-entrypoint.sh"]
 #====================================================#

@@ -1,7 +1,7 @@
 """A command line interface for a calculator app."""
 import click
 
-from simplecalc.calculator import (
+from app.calculator import (
     CalculatorTypeError,
     CalculatorValueError,
     difference as d,
