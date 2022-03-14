@@ -151,11 +151,11 @@ jobs:
         run: tar -xvf requirements.tar.gz
 
 
-      #- name: 📄 Artifact | Delete requirements
-      #  uses: geekyeggo/delete-artifact@v1
-      #  with:
-      #    name: requirements.tar.gz
-      #    failOnError: false
+      - name: 📄 Artifact | Delete requirements
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: requirements.tar.gz
+          failOnError: false
 
       #----------------------------------------------
       #Run coverage tests
