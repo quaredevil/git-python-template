@@ -235,5 +235,3 @@ jobs:
             ### Commits
 
             ${{ steps.changelog.outputs.changelog }}
-
-            Full Changelog: ${{ steps.changelog.outputs.compareurl }}
