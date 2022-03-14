@@ -214,6 +214,10 @@ jobs:
       #----------------------------------------------
       # Releases 
       #----------------------------------------------
+      - name: 🔖 Release | Extract Repo Attributes
+        id: attrs
+        uses: ibnesayeed/repo-attrs@master
+        
       - name: 🔖 Release | Publish Release
         uses: ncipollo/release-action@v1
         with:
