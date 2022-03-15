@@ -5,7 +5,7 @@ from click.testing import CliRunner
 
 def test_exception_handling_valid():
     """Test cli exception handling valid input."""
-    from simplecalc.cli import _exception_handler
+    from app.cli import _exception_handler
 
     def f(n1, n2):
         return n1 + n2
@@ -15,7 +15,7 @@ def test_exception_handling_valid():
 
 def test_exception_handling_error():
     """Test cli exception handling invalid input."""
-    from simplecalc.cli import _exception_handler
+    from app.cli import _exception_handler
 
     def f(test):
         raise Exception("Test")
@@ -36,8 +36,8 @@ def test_exception_handling_captures_calctypeerror(err_class, capfd):
         capfd: pytest stdout/stderr capture data
 
     """
-    from simplecalc.cli import _exception_handler
-    import simplecalc.calculator as calc
+    from app.cli import _exception_handler
+    import app.calculator as calc
 
     Error = getattr(calc, err_class)
 
@@ -52,7 +52,7 @@ def test_exception_handling_captures_calctypeerror(err_class, capfd):
 
 def test_calc_main():
     """Test main cli runner output."""
-    from simplecalc.cli import simplecalc
+    from app.cli import simplecalc
 
     runner = CliRunner()
     result = runner.invoke(simplecalc)
@@ -62,7 +62,7 @@ def test_calc_main():
 
 def test_calc_sum_fail():
     """Test sum failure."""
-    from simplecalc.cli import sum as s
+    from app.cli import sum as s
 
     runner = CliRunner()
     result = runner.invoke(s)
@@ -77,7 +77,7 @@ def test_calc_sum_fail():
 
 def test_calc_sum():
     """Test sum valid inputs."""
-    from simplecalc.cli import sum as s
+    from app.cli import sum as s
 
     runner = CliRunner()
     result = runner.invoke(s, ["1", "0.2", "0.3"])
@@ -87,7 +87,7 @@ def test_calc_sum():
 
 def test_calc_difference_fail():
     """Test difference command fail cases."""
-    from simplecalc.cli import difference
+    from app.cli import difference
 
     runner = CliRunner()
     result = runner.invoke(difference)
@@ -102,7 +102,7 @@ def test_calc_difference_fail():
 
 def test_calc_difference():
     """Test difference command with valid inputs."""
-    from simplecalc.cli import difference
+    from app.cli import difference
 
     runner = CliRunner()
     result = runner.invoke(difference, ["1", "0.2", "0.3"])
@@ -112,7 +112,7 @@ def test_calc_difference():
 
 def test_calc_product_fail():
     """Test product command with invalid inputs."""
-    from simplecalc.cli import product
+    from app.cli import product
 
     runner = CliRunner()
     result = runner.invoke(product)
@@ -127,7 +127,7 @@ def test_calc_product_fail():
 
 def test_calc_product():
     """Test product command with valid inputs."""
-    from simplecalc.cli import product
+    from app.cli import product
 
     runner = CliRunner()
     result = runner.invoke(product, ["1", "0.2", "0.3"])
@@ -137,7 +137,7 @@ def test_calc_product():
 
 def test_calc_quotient_fail():
     """Test quotient command for failure modes."""
-    from simplecalc.cli import quotient
+    from app.cli import quotient
 
     runner = CliRunner()
     result = runner.invoke(quotient)
@@ -159,7 +159,7 @@ def test_calc_quotient_fail():
 
 def test_calc_quotient():
     """Test quotient command with valid inputs."""
-    from simplecalc.cli import quotient
+    from app.cli import quotient
 
     runner = CliRunner()
     result = runner.invoke(quotient, ["1", "0.2", "0.3"])
@@ -169,7 +169,7 @@ def test_calc_quotient():
 
 def test_calc_power():
     """Test power command with valid inputs."""
-    from simplecalc.cli import power
+    from app.cli import power
 
     runner = CliRunner()
     result = runner.invoke(power, ["2", "4", "2"])

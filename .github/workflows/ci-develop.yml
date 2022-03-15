@@ -151,11 +151,11 @@ jobs:
         run: tar -xvf requirements.tar.gz
 
 
-      #- name: 📄 Artifact | Delete requirements
-      #  uses: geekyeggo/delete-artifact@v1
-      #  with:
-      #    name: requirements.tar.gz
-      #    failOnError: false
+      - name: 📄 Artifact | Delete requirements
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: requirements.tar.gz
+          failOnError: false
 
       #----------------------------------------------
       #Run coverage tests
@@ -164,10 +164,10 @@ jobs:
         id: pytester-cov
         uses: alexanderdamiani/pytester-cov@v1.2.3
         env:
-          PYTEST_ADDOPTS: -v -x --cov=simplecalc --cov-config=setup.cfg --cov-report=term
+          PYTEST_ADDOPTS: -v -x --cov=app --cov-config=setup.cfg --cov-report=term
         with:
           pytest-root-dir: '.'
-          cov-omit-list: '.venv/*, doc/*, simplecalc/tests/*'
+          cov-omit-list: '.venv/*, doc/*, app/tests/*'
           cov-threshold-single: ${{ secrets.COVERAGE_SINGLE }} 
           cov-threshold-total: ${{ secrets.COVERAGE_TOTAL }}
 

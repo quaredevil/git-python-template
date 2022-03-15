@@ -154,7 +154,7 @@ In order to automatically recognize external packages, another tool called seed-
 
 .. code-block::
 
-    isort --recursive --check-only simplecalc
+    isort --recursive --check-only app
 
 
 Commit
@@ -394,6 +394,7 @@ Issues
 ======
 
 Please report any bugs or requests that you have using the GitHub issue tracker!
+
 
 
 Authors

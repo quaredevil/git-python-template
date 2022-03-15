@@ -30,7 +30,7 @@ def get_version():
 
 # -- Project information -----------------------------------------------------
 
-project = "simplecalc"
+project = "app"
 copyright = "2022, Emanuel Barbosa Soares"
 author = "Emanuel Barbosa Soares"
 
@@ -84,7 +84,7 @@ html_theme_options = {"navigation_depth": -1}
 html_static_path = ["_static"]
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "simplecalcdoc"
+htmlhelp_basename = "appdoc"
 
 
 # Set master doc

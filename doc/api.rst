@@ -5,6 +5,6 @@ API Reference
 
 Calculator
 ----------
-.. automodule:: simplecalc.calculator
+.. automodule:: app.calculator
    :members:
    :undoc-members:
