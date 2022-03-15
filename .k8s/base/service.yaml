@@ -1,20 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-container-name
+  name: test-container-service
   annotations:
     field.cattle.io/targetWorkloadIds: '["test-cd/test-container-name"]'
     management.cattle.io/ui-managed: 'true'
   labels:
     {}
   namespace: test-cd
-  ownerReferences:
-    - apiVersion: apps/v1
-      controller: true
-      kind: Deployment
-      name: test-container-name
 spec:
   selector:
+    node.finance.99app.com/application: test-container-name
     workload.user.cattle.io/workloadselector: apps.deployment-test-cd-test-container-name
   ipFamilies:
     - IPv4
