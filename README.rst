@@ -269,18 +269,21 @@ Default parts are::
 
     / ("root")
     ├── .github                         - github (e.g. ci, images) stuff.
+    ├── .k8s                            - kubernetes (e.g. manifest) stuff.
+    ├── app                             - application stuff.
     ├── doc                             - documentation related stuff.
     ├── newsfragments                   - changelogs related stuff.
-    ├── app                             - application stuff.
     ├── .gitignore                      - parameters/directories to be ignored by git sync.
-    ├── pre-commit-config.yaml          - parameters to check after commit.
+    ├── .dockerignore                   - parameters/directories to be ignored by dockerbuild.
+    ├── .pre-commit-config.yaml         - parameters to check after commit.
+    ├── .pre-commit-hooks.yaml          - parameters to check after pre-commit.
+    ├── Dockerfile                      - converting application to container.
     ├── LICENSE                         - use license file.
-    ├── Makefile                        -
-    ├── pyproject.toml                  -
+    ├── Makefile                        - create shortcuts for commands.
+    ├── pyproject.toml                  - project configuration file.
     ├── README.md                       - development and design information.
-    ├── readthedocs.yml                 -
-    ├── Makefile                        -
-    └── setup.cfg                       -
+    ├── readthedocs.yml                 - docs configuration file.
+    └── setup.cfg                       - setup configuration file.
 
 
 Files related to application is in the ``app`` directory.
@@ -293,11 +296,8 @@ Application parts are::
     ├── interceptors                    - gRPC-interceptors related stuff.
     ├── core                            - application configuration, startup events, logging, helpers, resources for all.
     ├── .devops                         - devops related stuff.
-    │   └── environments                - environments stuff.
-    │   │   ├── env.env                 - template for use in environment variables
-    │   ├── containers                  - container/docker/kubernetes related stuff.
-    │   │   ├── .dockerignore           - parameters/directories to be ignored by docker build.
-    │   │   └── Dockerfile              - converting application to container.
+│   ├── .environments                    - environments stuff.
+│   │   └── .env                        - template for use in environment variables
     ├── .tls                            - digital certificate stuff.
     │   └── README.md                   - guide for generating the digital certificate.
     ├── models                          - pydantic models for this application (domains).
