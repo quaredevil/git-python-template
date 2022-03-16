@@ -112,7 +112,7 @@ jobs:
     environment:
       name: development
     
-    if: "!contains(github.event.head_commit.message, '/nocoverage')"
+    #if: "!contains(github.event.head_commit.message, '/nocoverage')"
 
     runs-on: ubuntu-latest
 
