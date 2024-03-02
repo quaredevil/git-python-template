@@ -41,14 +41,14 @@
    :target: https://github.com/pre-commit/pre-commit
    :alt: pre-commit
 
-.. |99applogo| image:: https://avatars.githubusercontent.com/u/4680924?s=400&v=4
+.. |applogo| image:: https://avatars.githubusercontent.com/u/13798628?s=400&v=4
    :alt: 99app
    :target: https://github.com/99Taxis
 
 .. list-table::
    :widths: 600 10
 
-   * - |99applogo|
+   * - |applogo|
      - Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et eros imperdiet, ullamcorper sapien id, convallis diam. Aliquam pellentesque sem a sem lacinia, eu aliquam ex dignissim. Quisque id justo eu eros dictum tristique at vitae elit. Curabitur quis leo neque. In auctor, urna viverra posuere iaculis, metus nunc aliquet erat, eu dictum neque ligula sed sapien. Vivamus ac bibendum magna.
        `Learn more. <https://#readme>`_
 
